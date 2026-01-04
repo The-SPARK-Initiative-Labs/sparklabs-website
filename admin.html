@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | S.P.A.R.K. Labs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    .admin-frame {
+      width: 100%;
+      height: calc(100vh - 200px);
+      min-height: 600px;
+      border: 2px solid #00ff00;
+      background: #000;
+    }
+    .admin-links {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .admin-links a {
+      padding: 10px 20px;
+      background: #001a00;
+      border: 1px solid #00ff00;
+      color: #00ff00;
+    }
+    .admin-links a:hover {
+      background: #003300;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <a href="index.html" class="logo">S.P.A.R.K. <span>Labs</span></a>
+      <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">Manifesto</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="genesis.html">Genesis</a></li>
+        <li><a href="partners.html">Partners</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section style="padding-top: 100px;">
+    <div class="container">
+      <h1 style="color: #ff6600; text-shadow: 0 0 10px #ff6600;">⚡ Admin Portal</h1>
+      
+      <div class="admin-links">
+        <a href="https://520799254adb.ngrok-free.app" target="_blank">🔗 Open in New Tab</a>
+        <a href="https://github.com/The-SPARK-Initiative-Labs" target="_blank">📦 GitHub</a>
+      </div>
+      
+      <iframe 
+        src="https://520799254adb.ngrok-free.app" 
+        class="admin-frame"
+        title="S.P.A.R.K. Labs Admin">
+      </iframe>
+      
+      <p style="color: #888; margin-top: 15px; font-size: 12px;">
+        Backend running on Glass | Port 5002 | ngrok tunnel
+      </p>
+    </div>
+  </section>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
