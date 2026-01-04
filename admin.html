@@ -45,11 +45,25 @@
         <li><a href="genesis.html">Genesis</a></li>
         <li><a href="partners.html">Partners</a></li>
         <li><a href="contact.html">Contact</a></li>
+        <li><a href="admin.html" class="active" style="border-color: #ff6600; color: #ff6600;">Admin</a></li>
       </ul>
     </div>
   </nav>
 
-  <section style="padding-top: 100px;">
+  <!-- PIN Gate -->
+  <div id="pin-gate" style="display: flex; justify-content: center; align-items: center; min-height: 100vh; padding-top: 60px;">
+    <div class="panel" style="text-align: center; max-width: 300px;">
+      <h2 style="color: #ff6600; margin-bottom: 20px;">🔐 Admin Access</h2>
+      <p style="color: #888; margin-bottom: 15px;">Enter 4-digit PIN</p>
+      <input type="password" id="pin-input" maxlength="4" 
+        style="background: #000; color: #00ff00; border: 2px solid #333; padding: 15px; font-size: 24px; text-align: center; width: 150px; letter-spacing: 10px; font-family: 'Courier New', monospace;"
+        onkeyup="checkPin(event)">
+      <p id="pin-error" style="color: #ff4444; margin-top: 10px; display: none;">Invalid PIN</p>
+    </div>
+  </div>
+
+  <!-- Admin Content (hidden until PIN) -->
+  <section id="admin-content" style="padding-top: 100px; display: none;">
     <div class="container">
       <h1 style="color: #ff6600; text-shadow: 0 0 10px #ff6600;">⚡ Admin Portal</h1>
       
@@ -59,7 +73,8 @@
       </div>
       
       <iframe 
-        src="https://520799254adb.ngrok-free.app" 
+        src="" 
+        id="admin-iframe"
         class="admin-frame"
         title="S.P.A.R.K. Labs Admin">
       </iframe>
@@ -71,5 +86,26 @@
   </section>
 
   <script src="assets/js/main.js"></script>
+  <script>
+    const CORRECT_PIN = '1337';
+    
+    function checkPin(e) {
+      const pin = document.getElementById('pin-input').value;
+      if (pin.length === 4) {
+        if (pin === CORRECT_PIN) {
+          document.getElementById('pin-gate').style.display = 'none';
+          document.getElementById('admin-content').style.display = 'block';
+          document.getElementById('admin-iframe').src = 'https://520799254adb.ngrok-free.app';
+        } else {
+          document.getElementById('pin-error').style.display = 'block';
+          document.getElementById('pin-input').value = '';
+          setTimeout(() => { document.getElementById('pin-error').style.display = 'none'; }, 2000);
+        }
+      }
+    }
+    
+    // Focus PIN input on load
+    document.getElementById('pin-input').focus();
+  </script>
 </body>
 </html>
