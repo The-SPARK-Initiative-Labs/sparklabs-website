@@ -12,6 +12,9 @@
   --accent-green: #00ff00;
   --accent-red: #ff4444;
   --accent-yellow: #ffff00;
+  --accent-blue: #00aaff;
+  --accent-purple: #aa66ff;
+  --accent-cyan: #00ffff;
   --border-color: #333;
   --border-highlight: #00ff00;
   --glow-green: 0 0 10px #00ff00;
@@ -53,14 +56,14 @@ h3 { font-size: 1.2rem; }
 p { margin-bottom: 1rem; }
 
 a {
-  color: var(--accent-green);
+  color: var(--accent-cyan);
   text-decoration: none;
   transition: all 0.2s ease;
 }
 
 a:hover {
-  color: var(--accent-orange);
-  text-shadow: var(--glow-orange);
+  color: var(--accent-blue);
+  text-shadow: 0 0 10px #00aaff;
 }
 
 /* Layout */
@@ -163,8 +166,8 @@ nav .container {
 }
 
 .hero h1 .highlight {
-  color: var(--accent-orange);
-  text-shadow: var(--glow-orange);
+  color: var(--accent-cyan);
+  text-shadow: 0 0 10px #00ffff;
 }
 
 .hero .tagline {
@@ -211,13 +214,13 @@ nav .container {
 }
 
 .btn-secondary {
-  background: #1a1a00;
-  border-color: var(--accent-orange);
-  color: var(--accent-orange);
+  background: #1a0033;
+  border-color: var(--accent-purple);
+  color: var(--accent-purple);
 }
 
 .btn-secondary:hover {
-  background: var(--accent-orange);
+  background: var(--accent-purple);
   color: #000;
 }
 
@@ -313,10 +316,10 @@ nav .container {
 }
 
 .tech-badge {
-  background: #001a00;
-  color: var(--accent-green);
+  background: #001a33;
+  color: var(--accent-blue);
   padding: 3px 10px;
-  border: 1px solid #003300;
+  border: 1px solid #003366;
   font-size: 11px;
 }
 
