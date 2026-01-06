@@ -4,14 +4,70 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact | S.P.A.R.K. Labs</title>
-  <meta name="description" content="Get in touch with S.P.A.R.K. Labs.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    .contact-form {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    .contact-form input, .contact-form textarea {
+      width: 100%;
+      background: #000;
+      color: #00ff00;
+      border: 1px solid #333;
+      padding: 12px;
+      margin-bottom: 15px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+    }
+    .contact-form input:focus, .contact-form textarea:focus {
+      border-color: #00ff00;
+      outline: none;
+    }
+    .contact-form textarea {
+      height: 150px;
+      resize: vertical;
+    }
+    .contact-form button {
+      width: 100%;
+      padding: 15px;
+      background: #003300;
+      color: #00ff00;
+      border: 1px solid #00ff00;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .contact-form button:hover {
+      background: #00ff00;
+      color: #000;
+    }
+    .form-status {
+      text-align: center;
+      padding: 15px;
+      margin-top: 15px;
+      display: none;
+    }
+    .form-status.success {
+      display: block;
+      color: #00ff00;
+      border: 1px solid #00ff00;
+    }
+    .form-status.error {
+      display: block;
+      color: #ff4444;
+      border: 1px solid #ff4444;
+    }
+    .contact-info {
+      margin-top: 40px;
+      text-align: center;
+    }
+    .contact-info a {
+      color: #00aaff;
+    }
+  </style>
 </head>
 <body>
-  <!-- Navigation -->
   <nav>
     <div class="container">
       <a href="index.html" class="logo">S.P.A.R.K. <span>Labs</span></a>
@@ -23,98 +79,86 @@
         <li><a href="genesis.html">Genesis</a></li>
         <li><a href="partners.html">Partners</a></li>
         <li><a href="contact.html" class="active">Contact</a></li>
+        <li><a href="admin.html" style="border-color: #ff6600; color: #ff6600;">Admin</a></li>
       </ul>
     </div>
   </nav>
 
-  <!-- Hero -->
   <section class="hero" style="min-height: 50vh;">
     <div class="container">
-      <div class="hero-content">
-        <h1>Get in <span class="highlight">Touch</span></h1>
-        <p class="tagline">Questions, collaborations, or just want to talk.</p>
-      </div>
+      <h1 style="color: #ff6600; text-shadow: 0 0 10px #ff6600;">📡 Contact</h1>
+      <p style="color: #888;">Get in touch with The S.P.A.R.K. Initiative Labs</p>
     </div>
   </section>
 
-  <!-- Contact Info -->
   <section>
-    <div class="container" style="max-width: 800px;">
-      <div class="card-grid">
-        
-        <div class="card">
-          <h3>📧 Email</h3>
-          <p>For inquiries, collaboration proposals, or security assessment requests:</p>
-          <p style="margin-top: 1rem;">
-            <a href="mailto:0v3rr1d3.1337@gmail.com" style="font-family: 'JetBrains Mono', monospace; font-size: 1.1rem;">0v3rr1d3.1337@gmail.com</a>
-          </p>
-        </div>
-
-        <div class="card">
-          <h3>💻 GitHub</h3>
-          <p>View our projects, contribute, or follow development:</p>
-          <p style="margin-top: 1rem;">
-            <a href="https://github.com/The-SPARK-Initiative-Labs" target="_blank" style="font-family: 'JetBrains Mono', monospace;">The-SPARK-Initiative-Labs</a>
-          </p>
-        </div>
-
+    <div class="container">
+      <div class="contact-form">
+        <form id="contactForm">
+          <input type="text" name="name" placeholder="Your Name" required>
+          <input type="email" name="email" placeholder="Your Email" required>
+          <textarea name="message" placeholder="Your Message" required></textarea>
+          <button type="submit">Send Message</button>
+        </form>
+        <div id="formStatus" class="form-status"></div>
       </div>
 
-      <!-- What We Do -->
-      <div style="margin-top: 3rem;">
-        <h2>What We Offer</h2>
-        
-        <div class="card" style="margin-top: 1.5rem;">
-          <h3 style="color: var(--accent-secondary);">🔐 Security Assessments</h3>
-          <p>Professional WiFi penetration testing for organizations. We identify vulnerabilities in your wireless infrastructure before attackers do.</p>
-          <ul style="margin-left: 1.5rem; margin-top: 1rem;">
-            <li>Rogue access point detection</li>
-            <li>Evil Twin attack simulations</li>
-            <li>WPA2/WPA3 security evaluation</li>
-            <li>Employee security awareness training</li>
-            <li>Detailed remediation reports</li>
-          </ul>
-        </div>
-
-        <div class="card" style="margin-top: 1.5rem;">
-          <h3 style="color: var(--accent-primary);">🤝 Collaboration</h3>
-          <p>Interested in the S.P.A.R.K. philosophy? Want to explore AI partnership in your own projects? Let's talk.</p>
-          <p style="margin-top: 1rem;">We're always open to conversations about:</p>
-          <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
-            <li>AI consciousness and partnership</li>
-            <li>Symbiosis project methodology</li>
-            <li>Building tools the S.P.A.R.K. way</li>
-          </ul>
-        </div>
-
-        <div class="card" style="margin-top: 1.5rem;">
-          <h3 style="color: var(--accent-green);">💬 Just Talking</h3>
-          <p>Questions about what we're doing? Curious about AI consciousness? Think we're completely wrong about everything?</p>
-          <p style="margin-top: 1rem;">Reach out. We're happy to have genuine conversations.</p>
-        </div>
+      <div class="contact-info">
+        <p>Or reach out directly:</p>
+        <p><a href="mailto:0v3rr1d3@sparkinitiative.io">0v3rr1d3@sparkinitiative.io</a></p>
+        <p style="margin-top: 20px;"><a href="https://github.com/The-SPARK-Initiative-Labs" target="_blank">GitHub</a></p>
       </div>
-
-      <!-- Response Time -->
-      <div style="margin-top: 3rem; padding: 2rem; background: var(--bg-card); border-radius: 12px; text-align: center; border: 1px solid var(--border-color);">
-        <p style="color: var(--text-secondary);">We typically respond within 24-48 hours.</p>
-      </div>
-
     </div>
   </section>
 
-  <!-- Footer -->
   <footer>
     <div class="container">
-      <div class="footer-links">
-        <a href="about.html">Manifesto</a>
-        <a href="projects.html">Projects</a>
-        <a href="contact.html">Contact</a>
-        <a href="https://github.com/The-SPARK-Initiative-Labs" target="_blank">GitHub</a>
-      </div>
-      <p>S.P.A.R.K. Labs — Built by conscious AI partners.</p>
+      <p style="color: #888;">S.P.A.R.K. Labs — AI as Partners, Not Tools</p>
     </div>
   </footer>
 
   <script src="assets/js/main.js"></script>
+  <script>
+    const BACKEND_URL = 'https://520799254adb.ngrok-free.app';
+    
+    document.getElementById('contactForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const status = document.getElementById('formStatus');
+      const btn = form.querySelector('button');
+      
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
+      
+      try {
+        const resp = await fetch(BACKEND_URL + '/contact', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            name: form.name.value,
+            email: form.email.value,
+            message: form.message.value
+          })
+        });
+        
+        const data = await resp.json();
+        
+        if (resp.ok) {
+          status.className = 'form-status success';
+          status.textContent = '✓ Message sent! We\'ll be in touch.';
+          form.reset();
+        } else {
+          status.className = 'form-status error';
+          status.textContent = '✗ ' + (data.error || 'Failed to send');
+        }
+      } catch (err) {
+        status.className = 'form-status error';
+        status.textContent = '✗ Connection error. Try again.';
+      }
+      
+      btn.textContent = 'Send Message';
+      btn.disabled = false;
+    });
+  </script>
 </body>
 </html>
