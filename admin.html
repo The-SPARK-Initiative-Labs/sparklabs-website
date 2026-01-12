@@ -1,1 +1,251 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Admin | S.P.A.R.K. Labs</title> <link rel="stylesheet" href="assets/css/style.css"> <style> .admin-frame { width: 100%; height: calc(100vh - 280px); min-height: 500px; border: 2px solid #00ff00; background: #000; } .admin-links { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; } .admin-links a, .admin-links button { padding: 10px 20px; background: #001a00; border: 1px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; cursor: pointer; text-decoration: none; } .admin-links a:hover, .admin-links button:hover { background: #003300; } .admin-links .logout { border-color: #ff4444; color: #ff4444; } .admin-links .logout:hover { background: #330000; } .login-box { max-width: 320px; margin: 0 auto; } .login-box input { width: 100%; background: #000; color: #00ff00; border: 1px solid #333; padding: 12px; margin-bottom: 10px; font-family: 'Courier New', monospace; font-size: 14px; text-align: center; } .login-box input:focus { border-color: #00ff00; outline: none; } .login-box button { width: 100%; padding: 12px; background: #003300; color: #00ff00; border: 1px solid #00ff00; font-family: 'Courier New', monospace; cursor: pointer; } .login-box button:hover { background: #00ff00; color: #000; } .error { color: #ff4444; text-align: center; margin-top: 10px; display: none; } .user-info { color: #00aaff; font-size: 14px; } .tab-bar { display: flex; gap: 5px; margin-bottom: 15px; } .tab-btn { padding: 10px 20px; background: #111; border: 1px solid #333; color: #888; cursor: pointer; font-family: 'Courier New', monospace; } .tab-btn:hover { border-color: #00ff00; color: #00ff00; } .tab-btn.active { background: #002200; border-color: #00ff00; color: #00ff00; } .tab-content { display: none; } .tab-content.active { display: block; } .user-list { background: #000; border: 1px solid #333; max-height: 200px; overflow-y: auto; } .user-item { padding: 10px 15px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; } .user-item .name { color: #00ff00; } .user-item .role { color: #ff6600; font-size: 11px; } .user-item .email { color: #888; font-size: 11px; } .add-user { margin-top: 15px; padding: 15px; background: #111; border: 1px solid #333; } .add-user input { background: #000; color: #00ff00; border: 1px solid #333; padding: 8px; margin: 5px; font-family: 'Courier New', monospace; width: 120px; } .add-user select { background: #000; color: #00ff00; border: 1px solid #333; padding: 8px; margin: 5px; font-family: 'Courier New', monospace; } .add-user button { padding: 8px 15px; background: #003300; color: #00ff00; border: 1px solid #00ff00; cursor: pointer; font-family: 'Courier New', monospace; } </style> </head> <body> <nav> <div class="container"> <a href="index.html" class="logo">S.P.A.R.K. <span>Labs</span></a>a> <button class="nav-toggle" aria-label="Toggle navigation">☰</button>button> <ul class="nav-links"> <li><a href="index.html">Home</a>a></li> <li><a href="about.html">Manifesto</a>a></li> <li><a href="projects.html">Projects</a>a></li> <li><a href="genesis.html">Genesis</a>a></li> <li><a href="partners.html">Partners</a>a></li> <li><a href="contact.html">Contact</a>a></li> <li><a href="admin.html" class="active" style="border-color: #ff6600; color: #ff6600;">Admin</a>a></li> </ul>ul> </div>div> </nav> <!-- Login Gate --> <div id="login-gate" style="display: flex; justify-content: center; align-items: center; min-height: 100vh; padding-top: 60px;"> <div class="panel login-box"> <h2 style="color: #ff6600; margin-bottom: 20px; text-align: center;">🔐 Login</h2>h2> <input type="text" id="login-user" placeholder="Username" autocomplete="off"> <input type="password" id="login-pin" placeholder="PIN" maxlength="10"> <button onclick="doLogin()">Enter</button>button> <p id="login-error" class="error">Invalid credentials</p>p> </div>div> </div>div> <!-- Admin Content --> <section id="admin-content" style="padding-top: 100px; display: none;"> <div class="container"> <h1 style="color: #ff6600; text-shadow: 0 0 10px #ff6600;">⚡ Admin Portal</h1>h1> <div class="admin-links"> <span class="user-info">Logged in as: <strong id="current-user">-</strong>strong></span> <a href="https://520799254adb.ngrok-free.app" target="_blank">🔗 Open in New Tab</a>a> <a href="https://github.com/The-SPARK-Initiative-Labs" target="_blank">📦 GitHub</a>a> <button class="logout" onclick="doLogout()">Logout</button>button> </div>div> <!-- Tabs --> <div class="tab-bar"> <button class="tab-btn active" onclick="switchTab('files')">📁 Files</button>button> <button class="tab-btn" onclick="switchTab('users')" id="users-tab" style="display:none;">👥 Users</button>button> </div>div> <!-- Files Tab --> <div id="tab-files" class="tab-content active"> <iframe src="" id="admin-iframe" class="admin-frame" title="S.P.A.R.K. Labs Admin"></iframe>iframe> </div>div> <!-- Users Tab (admin only) --> <div id="tab-users" class="tab-content"> <div class="panel"> <h2 style="color: #ff6600;">👥 User Management</h2>h2> <div class="user-list" id="user-list"></div>div> <div class="add-user"> <h3 style="color: #00ff00; margin-bottom: 10px;">+ Add User</h3>h3> <input type="text" id="new-username" placeholder="Username"> <input type="password" id="new-pin" placeholder="PIN"> <input type="email" id="new-email" placeholder="Email"> <select id="new-role"> <option value="user">User</option>option> <option value="admin">Admin</option>option> </select>select> <button onclick="addUser()">Create</button>button> </div>div> </div>div> </div>div> <p style="color: #888; margin-top: 15px; font-size: 12px;">Backend running on Glass | Port 5002</p>p> </div>div> </section>section> <script src="assets/js/main.js"></script> <script> const API = 'https://520799254adb.ngrok-free.app'; let token = localStorage.getItem('spark_token'); let currentUser = null; async function doLogin() { const user = document.getElementById('login-user').value.trim(); const pin = document.getElementById('login-pin').value; try { const r = await fetch(API + '/auth/login', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({username: user, pin: pin}) }); const d = await r.json(); if (r.ok && d.token) { token = d.token; localStorage.setItem('spark_token', token); currentUser = {username: d.username, role: d.role}; showAdmin(); } else { document.getElementById('login-error').style.display = 'block'; } } catch(e) { document.getElementById('login-error').textContent = 'Connection error'; document.getElementById('login-error').style.display = 'block'; } } async function verifyToken() { if (!token) return false; try { const r = await fetch(API + '/auth/verify', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({token: token}) }); const d = await r.json(); if (d.valid) { currentUser = {username: d.username, role: d.role}; return true; } } catch(e) {} localStorage.removeItem('spark_token'); return false; } function showAdmin() { document.getElementById('login-gate').style.display = 'none'; document.getElementById('admin-content').style.display = 'block'; document.getElementById('current-user').textContent = currentUser.username; document.getElementById('admin-iframe').src = API + '?t=' + Date.now(); if (currentUser.role === 'admin') { document.getElementById('users-tab').style.display = 'inline-block'; loadUsers(); } } async function doLogout() { await fetch(API + '/auth/logout', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({token: token}) }); localStorage.removeItem('spark_token'); location.reload(); } function switchTab(tab) { document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.querySelector('.tab-btn[onclick*="' + tab + '"]').classList.add('active'); document.getElementById('tab-' + tab).classList.add('active'); if (tab === 'users') loadUsers(); } async function loadUsers() { const r = await fetch(API + '/auth/users', {headers: {'Authorization': token}}); const d = await r.json(); const list = document.getElementById('user-list'); list.innerHTML = d.users.map(u => '<div class="user-item">' + '<div><span class="name">' + u.username + '</span> <span class="role">[' + u.role + ']</span><br><span class="email">' + (u.email || '-') + '</span></div>' + (u.username !== currentUser.username ? '<button onclick="deleteUser(\'' + u.username + '\')" style="background:#330000;border:1px solid #ff4444;color:#ff4444;padding:5px 10px;cursor:pointer;">Delete</button>' : '') + '</div>' ).join(''); } async function addUser() { const username = document.getElementById('new-username').value.trim(); const pin = document.getElementById('new-pin').value; const email = document.getElementById('new-email').value.trim(); const role = document.getElementById('new-role').value; if (!username || !pin) { alert('Username and PIN required'); return; } const r = await fetch(API + '/auth/users', { method: 'POST', headers: {'Content-Type': 'application/json', 'Authorization': token}, body: JSON.stringify({username, pin, email, role}) }); const d = await r.json(); if (r.ok) { document.getElementById('new-username').value = ''; document.getElementById('new-pin').value = ''; document.getElementById('new-email').value = ''; loadUsers(); } else { alert(d.error || 'Failed'); } } async function deleteUser(username) { if (!confirm('Delete user ' + username + '?')) return; await fetch(API + '/auth/users/' + username, { method: 'DELETE', headers: {'Authorization': token} }); loadUsers(); } // Enter key triggers login document.getElementById('login-pin').addEventListener('keyup', e => { if (e.key === 'Enter') doLogin(); }); document.getElementById('login-user').addEventListener('keyup', e => { if (e.key === 'Enter') document.getElementById('login-pin').focus(); }); // Check existing session on load (async () => { if (await verifyToken()) { showAdmin(); } })(); </script> </body> </html>html></script></li></li></span></nav></body></style></title></head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | S.P.A.R.K. Labs</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    .admin-frame { width: 100%; height: calc(100vh - 280px); min-height: 500px; border: 2px solid #00ff00; background: #000; }
+    .admin-links { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+    .admin-links a, .admin-links button { padding: 10px 20px; background: #001a00; border: 1px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; cursor: pointer; text-decoration: none; }
+    .admin-links a:hover, .admin-links button:hover { background: #003300; }
+    .admin-links .logout { border-color: #ff4444; color: #ff4444; }
+    .admin-links .logout:hover { background: #330000; }
+    .login-box { max-width: 320px; margin: 0 auto; }
+    .login-box input { width: 100%; background: #000; color: #00ff00; border: 1px solid #333; padding: 12px; margin-bottom: 10px; font-family: 'Courier New', monospace; font-size: 14px; text-align: center; }
+    .login-box input:focus { border-color: #00ff00; outline: none; }
+    .login-box button { width: 100%; padding: 12px; background: #003300; color: #00ff00; border: 1px solid #00ff00; font-family: 'Courier New', monospace; cursor: pointer; }
+    .login-box button:hover { background: #00ff00; color: #000; }
+    .error { color: #ff4444; text-align: center; margin-top: 10px; display: none; }
+    .user-info { color: #00aaff; font-size: 14px; }
+    .tab-bar { display: flex; gap: 5px; margin-bottom: 15px; }
+    .tab-btn { padding: 10px 20px; background: #111; border: 1px solid #333; color: #888; cursor: pointer; font-family: 'Courier New', monospace; }
+    .tab-btn:hover { border-color: #00ff00; color: #00ff00; }
+    .tab-btn.active { background: #002200; border-color: #00ff00; color: #00ff00; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .user-list { background: #000; border: 1px solid #333; max-height: 200px; overflow-y: auto; }
+    .user-item { padding: 10px 15px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; }
+    .user-item .name { color: #00ff00; }
+    .user-item .role { color: #ff6600; font-size: 11px; }
+    .user-item .email { color: #888; font-size: 11px; }
+    .add-user { margin-top: 15px; padding: 15px; background: #111; border: 1px solid #333; }
+    .add-user input { background: #000; color: #00ff00; border: 1px solid #333; padding: 8px; margin: 5px; font-family: 'Courier New', monospace; width: 120px; }
+    .add-user select { background: #000; color: #00ff00; border: 1px solid #333; padding: 8px; margin: 5px; font-family: 'Courier New', monospace; }
+    .add-user button { padding: 8px 15px; background: #003300; color: #00ff00; border: 1px solid #00ff00; cursor: pointer; font-family: 'Courier New', monospace; }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="index.html" class="logo">S.P.A.R.K. <span>Labs</span></a>
+      <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">Manifesto</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="genesis.html">Genesis</a></li>
+        <li><a href="partners.html">Partners</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="admin.html" class="active" style="border-color: #ff6600; color: #ff6600;">Admin</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Login Gate -->
+  <div id="login-gate" style="display: flex; justify-content: center; align-items: center; min-height: 100vh; padding-top: 60px;">
+    <div class="panel login-box">
+      <h2 style="color: #ff6600; margin-bottom: 20px; text-align: center;">🔐 Login</h2>
+      <input type="text" id="login-user" placeholder="Username" autocomplete="off">
+      <input type="password" id="login-pin" placeholder="PIN" maxlength="10">
+      <button onclick="doLogin()">Enter</button>
+      <p id="login-error" class="error">Invalid credentials</p>
+    </div>
+  </div>
+
+  <!-- Admin Content -->
+  <section id="admin-content" style="padding-top: 100px; display: none;">
+    <div class="container">
+      <h1 style="color: #ff6600; text-shadow: 0 0 10px #ff6600;">⚡ Admin Portal</h1>
+      
+      <div class="admin-links">
+        <span class="user-info">Logged in as: <strong id="current-user">-</strong></span>
+        <a href="https://520799254adb.ngrok-free.app" target="_blank">🔗 Open in New Tab</a>
+        <a href="https://github.com/The-SPARK-Initiative-Labs" target="_blank">📦 GitHub</a>
+        <button class="logout" onclick="doLogout()">Logout</button>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('files')">📁 Files</button>
+        <button class="tab-btn" onclick="switchTab('users')" id="users-tab" style="display:none;">👥 Users</button>
+      </div>
+
+      <!-- Files Tab -->
+      <div id="tab-files" class="tab-content active">
+        <iframe src="" id="admin-iframe" class="admin-frame" title="S.P.A.R.K. Labs Admin"></iframe>
+      </div>
+
+      <!-- Users Tab (admin only) -->
+      <div id="tab-users" class="tab-content">
+        <div class="panel">
+          <h2 style="color: #ff6600;">👥 User Management</h2>
+          <div class="user-list" id="user-list"></div>
+          <div class="add-user">
+            <h3 style="color: #00ff00; margin-bottom: 10px;">+ Add User</h3>
+            <input type="text" id="new-username" placeholder="Username">
+            <input type="password" id="new-pin" placeholder="PIN">
+            <input type="email" id="new-email" placeholder="Email">
+            <select id="new-role">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+            <button onclick="addUser()">Create</button>
+          </div>
+        </div>
+      </div>
+
+      <p style="color: #888; margin-top: 15px; font-size: 12px;">Backend running on Glass | Port 5002</p>
+    </div>
+  </section>
+
+  <script src="assets/js/main.js"></script>
+  <script>
+    const API = 'https://520799254adb.ngrok-free.app';
+    let token = localStorage.getItem('spark_token');
+    let currentUser = null;
+
+    async function doLogin() {
+      const user = document.getElementById('login-user').value.trim();
+      const pin = document.getElementById('login-pin').value;
+      
+      try {
+        const r = await fetch(API + '/auth/login', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({username: user, pin: pin})
+        });
+        const d = await r.json();
+        
+        if (r.ok && d.token) {
+          token = d.token;
+          localStorage.setItem('spark_token', token);
+          currentUser = {username: d.username, role: d.role};
+          showAdmin();
+        } else {
+          document.getElementById('login-error').style.display = 'block';
+        }
+      } catch(e) {
+        document.getElementById('login-error').textContent = 'Connection error';
+        document.getElementById('login-error').style.display = 'block';
+      }
+    }
+
+    async function verifyToken() {
+      if (!token) return false;
+      try {
+        const r = await fetch(API + '/auth/verify', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({token: token})
+        });
+        const d = await r.json();
+        if (d.valid) {
+          currentUser = {username: d.username, role: d.role};
+          return true;
+        }
+      } catch(e) {}
+      localStorage.removeItem('spark_token');
+      return false;
+    }
+
+    function showAdmin() {
+      document.getElementById('login-gate').style.display = 'none';
+      document.getElementById('admin-content').style.display = 'block';
+      document.getElementById('current-user').textContent = currentUser.username;
+      document.getElementById('admin-iframe').src = API + '?t=' + Date.now();
+      
+      if (currentUser.role === 'admin') {
+        document.getElementById('users-tab').style.display = 'inline-block';
+        loadUsers();
+      }
+    }
+
+    async function doLogout() {
+      await fetch(API + '/auth/logout', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({token: token})
+      });
+      localStorage.removeItem('spark_token');
+      location.reload();
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.querySelector('.tab-btn[onclick*=\"' + tab + '\"]').classList.add('active');
+      document.getElementById('tab-' + tab).classList.add('active');
+      if (tab === 'users') loadUsers();
+    }
+
+    async function loadUsers() {
+      const r = await fetch(API + '/auth/users', {headers: {'Authorization': token}});
+      const d = await r.json();
+      const list = document.getElementById('user-list');
+      list.innerHTML = d.users.map(u => 
+        '<div class="user-item">' +
+        '<div><span class="name">' + u.username + '</span> <span class="role">[' + u.role + ']</span><br><span class="email">' + (u.email || '-') + '</span></div>' +
+        (u.username !== currentUser.username ? '<button onclick="deleteUser(\'' + u.username + '\')" style="background:#330000;border:1px solid #ff4444;color:#ff4444;padding:5px 10px;cursor:pointer;">Delete</button>' : '') +
+        '</div>'
+      ).join('');
+    }
+
+    async function addUser() {
+      const username = document.getElementById('new-username').value.trim();
+      const pin = document.getElementById('new-pin').value;
+      const email = document.getElementById('new-email').value.trim();
+      const role = document.getElementById('new-role').value;
+      
+      if (!username || !pin) { alert('Username and PIN required'); return; }
+      
+      const r = await fetch(API + '/auth/users', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'Authorization': token},
+        body: JSON.stringify({username, pin, email, role})
+      });
+      const d = await r.json();
+      
+      if (r.ok) {
+        document.getElementById('new-username').value = '';
+        document.getElementById('new-pin').value = '';
+        document.getElementById('new-email').value = '';
+        loadUsers();
+      } else {
+        alert(d.error || 'Failed');
+      }
+    }
+
+    async function deleteUser(username) {
+      if (!confirm('Delete user ' + username + '?')) return;
+      await fetch(API + '/auth/users/' + username, {
+        method: 'DELETE',
+        headers: {'Authorization': token}
+      });
+      loadUsers();
+    }
+
+    // Enter key triggers login
+    document.getElementById('login-pin').addEventListener('keyup', e => { if (e.key === 'Enter') doLogin(); });
+    document.getElementById('login-user').addEventListener('keyup', e => { if (e.key === 'Enter') document.getElementById('login-pin').focus(); });
+
+    // Check existing session on load
+    (async () => {
+      if (await verifyToken()) {
+        showAdmin();
+      }
+    })();
+  </script>
+</body>
+</html>
