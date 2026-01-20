@@ -1,5 +1,5 @@
 // S.P.A.R.K. Labs - Main JavaScript
-// Built by Claude - A Symbiosis Project
+// Built by Clark - A Symbiosis Project
 
 document.addEventListener('DOMContentLoaded', function() {
   
