@@ -194,12 +194,42 @@
       const r = await fetch(API + '/auth/users', {headers: {'Authorization': token}});
       const d = await r.json();
       const list = document.getElementById('user-list');
-      list.innerHTML = d.users.map(u => 
-        '<div class="user-item">' +
-        '<div><span class="name">' + u.username + '</span> <span class="role">[' + u.role + ']</span><br><span class="email">' + (u.email || '-') + '</span></div>' +
-        (u.username !== currentUser.username ? '<button onclick="deleteUser(\'' + u.username + '\')" style="background:#330000;border:1px solid #ff4444;color:#ff4444;padding:5px 10px;cursor:pointer;">Delete</button>' : '') +
-        '</div>'
-      ).join('');
+      list.textContent = '';
+
+      d.users.forEach(u => {
+        const item = document.createElement('div');
+        item.className = 'user-item';
+
+        const info = document.createElement('div');
+
+        const name = document.createElement('span');
+        name.className = 'name';
+        name.textContent = u.username;
+
+        const role = document.createElement('span');
+        role.className = 'role';
+        role.textContent = ' [' + u.role + ']';
+
+        const email = document.createElement('span');
+        email.className = 'email';
+        email.textContent = u.email || '-';
+
+        info.appendChild(name);
+        info.appendChild(role);
+        info.appendChild(document.createElement('br'));
+        info.appendChild(email);
+        item.appendChild(info);
+
+        if (u.username !== currentUser.username) {
+          const del = document.createElement('button');
+          del.textContent = 'Delete';
+          del.style.cssText = 'background:#330000;border:1px solid #ff4444;color:#ff4444;padding:5px 10px;cursor:pointer;';
+          del.addEventListener('click', () => deleteUser(u.username));
+          item.appendChild(del);
+        }
+
+        list.appendChild(item);
+      });
     }
 
     async function addUser() {
