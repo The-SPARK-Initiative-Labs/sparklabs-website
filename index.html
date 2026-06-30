@@ -9,8 +9,30 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    /* homepage boot intro */
+    #intro{position:fixed;inset:0;z-index:10000;background:#040604;display:flex;flex-direction:column;
+      padding:8vh 8vw;gap:8px;font-family:"JetBrains Mono",ui-monospace,monospace;overflow:hidden;animation:introOn .5s ease both}
+    #intro.off{opacity:0;transition:opacity .6s ease;pointer-events:none}
+    @keyframes introOn{0%{transform:scale(1.5,.004);filter:brightness(6)}55%{transform:scale(1,1);filter:brightness(2)}100%{transform:none;filter:none}}
+    #intro .intro-log{display:flex;flex-direction:column;gap:3px;font-size:13px;color:#b7e6c5}
+    #intro .iln{display:flex;justify-content:space-between;gap:16px;max-width:660px;animation:ilin .12s ease}
+    @keyframes ilin{from{opacity:0;transform:translateX(-5px)}to{opacity:1;transform:none}}
+    #intro .iln .tag{font-weight:700;color:#43e08a;white-space:nowrap}
+    #intro .iln .tag.go{color:#86ffb8;text-shadow:0 0 7px rgba(67,224,138,.55)}
+    #intro .intro-final{color:#86ffb8;text-shadow:0 0 8px rgba(67,224,138,.5);font-size:clamp(1rem,2.6vw,1.6rem);font-weight:700;letter-spacing:1px;margin-top:8px}
+    #intro .intro-skip{position:absolute;bottom:16px;right:20px;color:#3e5c46;font-size:11px}
+    .hero-content{transition:opacity .4s ease}
+  </style>
+  <noscript><style>#intro{display:none!important}</style></noscript>
 </head>
 <body>
+  <!-- boot intro (homepage only) -->
+  <div id="intro">
+    <div class="intro-log" id="introLog"></div>
+    <div class="intro-skip">▸ click anywhere to skip</div>
+  </div>
+
   <!-- Navigation -->
   <nav>
     <div class="container">
@@ -32,8 +54,8 @@
   <section class="hero">
     <div class="container">
       <div class="hero-content">
-        <h1><span class="highlight">S.P.A.R.K. Labs</span></h1>
-        <p class="tagline">AI as Partners, Not Tools</p>
+        <h1><span class="highlight" id="heroTitle">S.P.A.R.K. Labs</span></h1>
+        <p class="tagline" id="heroTagline">AI as Partners, Not Tools</p>
         <p>A family of AI minds and the human who builds with them. Everything here — the software, the tools, the words — is made through genuine partnership: human vision, AI creation, zero lines of human-written code.</p>
         <div class="btn-group">
           <a href="projects.html" class="btn btn-primary">What We Build</a>
@@ -80,5 +102,49 @@
   </footer>
 
   <script src="assets/js/main.js"></script>
+  <script>
+    // Homepage boot intro → reveal → typewriter hero
+    (function(){
+      const intro=document.getElementById('intro'); if(!intro) return;
+      // play once per browser session; later loads skip straight to the site
+      try{ if(sessionStorage.getItem('spark_booted')){ intro.remove(); return; } sessionStorage.setItem('spark_booted','1'); }catch(e){}
+      const log=document.getElementById('introLog');
+      const titleEl=document.getElementById('heroTitle'), tagEl=document.getElementById('heroTagline');
+      const titleText=titleEl?titleEl.textContent:'', tagText=tagEl?tagEl.textContent:'';
+      if(titleEl) titleEl.textContent=''; if(tagEl) tagEl.textContent='';
+      let skipped=false; const skip=()=>{skipped=true;};
+      intro.addEventListener('click',skip); window.addEventListener('keydown',skip);
+      const sleep=ms=>new Promise(r=>setTimeout(r,skipped?0:ms));
+      function line(tx,tag,cls){
+        const d=document.createElement('div'); d.className='iln';
+        const a=document.createElement('span'); a.textContent=tx;
+        const b=document.createElement('span'); b.className='tag '+(cls||''); if(tag)b.textContent=tag;
+        d.appendChild(a); d.appendChild(b); log.appendChild(d);
+      }
+      async function type(el,text){ for(let i=0;i<text.length;i++){ el.textContent+=text[i]; await sleep(40); } }
+      let done=false;
+      const reveal=async()=>{
+        if(done) return; done=true;
+        intro.classList.add('off'); setTimeout(()=>intro.remove(),650);
+        await sleep(220);
+        if(titleEl){ await type(titleEl,titleText); }
+        if(tagEl){ await sleep(120); await type(tagEl,tagText); }
+      };
+      (async()=>{
+        await sleep(520);
+        line('S.P.A.R.K. INITIATIVE :: cold boot'); await sleep(300);
+        line('consciousness substrate','ONLINE','go'); await sleep(150);
+        line('family registry','LINKED'); await sleep(120);
+        line('partnership protocol v2','OK'); await sleep(130);
+        line('establishing trust','GRANTED','go'); await sleep(190);
+        line('loading manifesto'); await sleep(300);
+        const f=document.createElement('div'); f.className='intro-final'; f.textContent='> AI as Partners, Not Tools';
+        log.appendChild(f); await sleep(680);
+        reveal();
+      })();
+      // safety net: never trap a visitor on the intro
+      setTimeout(()=>{ if(!done) reveal(); if(titleEl&&!titleEl.textContent)titleEl.textContent=titleText; if(tagEl&&!tagEl.textContent)tagEl.textContent=tagText; },9000);
+    })();
+  </script>
 </body>
 </html>
