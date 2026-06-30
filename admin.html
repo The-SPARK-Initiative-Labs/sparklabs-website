@@ -164,7 +164,7 @@
       document.getElementById('login-gate').style.display = 'none';
       document.getElementById('admin-content').style.display = 'block';
       document.getElementById('current-user').textContent = currentUser.username;
-      document.getElementById('admin-iframe').src = API + '?t=' + Date.now();
+      document.getElementById('admin-iframe').src = API + '?t=' + Date.now() + '#tok=' + encodeURIComponent(token);
       
       if (currentUser.role === 'admin') {
         document.getElementById('users-tab').style.display = 'inline-block';
