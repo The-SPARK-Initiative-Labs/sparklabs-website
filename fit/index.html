@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#171B2E">
+<meta name="robots" content="noindex, nofollow">
+<title>8-Week Block</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#171B2E; --paper:#F1F0F6; --card:#FFFFFF;
+  --violet:#4A38DC; --violet-soft:#E8E4FF; --violet-deep:#2E1FA6;
+  --teal:#12866B; --teal-soft:#D9F0E8;
+  --muted:#6C7185; --line:#DFDDE8;
+  --disp:"Barlow Condensed",Impact,sans-serif;
+  --body:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);
+  font-size:16px;line-height:1.5;padding-bottom:64px;
+  padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);
+}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+
+/* ---------- masthead ---------- */
+.top{background:var(--ink);color:#fff;padding:26px 0 20px;padding-top:calc(26px + env(safe-area-inset-top))}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#9BA0C0;margin:0 0 6px}
+h1{font-family:var(--disp);font-weight:700;font-size:44px;line-height:.94;letter-spacing:-.01em;margin:0 0 4px;text-transform:uppercase}
+.dates{font-family:var(--mono);font-size:12px;color:#9BA0C0;margin:0 0 20px}
+
+/* ---------- the block: 56 dots ---------- */
+.block{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin:0 0 14px}
+.pip{aspect-ratio:1;border-radius:3px;background:rgba(255,255,255,.11);transition:background .25s,transform .25s}
+.pip.rest{background:rgba(255,255,255,.05)}
+.pip.done{background:#5CE0B8}
+.pip.today{box-shadow:inset 0 0 0 2px #fff}
+.pip.pop{transform:scale(1.35)}
+.tally{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--mono);font-size:12px;color:#9BA0C0}
+.tally b{color:#5CE0B8;font-weight:600}
+
+.jump{display:block;width:100%;margin:16px 0 0;padding:13px;border:0;border-radius:10px;
+  background:var(--violet);color:#fff;font-family:var(--disp);font-size:19px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+.jump:active{background:var(--violet-deep)}
+
+/* ---------- weeks ---------- */
+.week{margin:20px 0 0}
+.wk-head{display:flex;align-items:baseline;gap:10px;padding:0 2px 8px;border-bottom:2px solid var(--ink)}
+.wk-num{font-family:var(--disp);font-size:26px;font-weight:700;text-transform:uppercase;letter-spacing:.01em}
+.wk-range{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-left:auto}
+
+/* ---------- day cards ---------- */
+.day{background:var(--card);border:1px solid var(--line);border-radius:12px;margin:8px 0;overflow:hidden}
+.day.is-today{border-color:var(--violet);box-shadow:0 0 0 2px var(--violet-soft)}
+.day.is-rest{background:transparent;border-style:dashed}
+.day.is-done .d-title{color:var(--teal)}
+
+.d-head{display:flex;align-items:center;gap:12px;width:100%;padding:14px;background:none;border:0;
+  font:inherit;color:inherit;text-align:left;cursor:pointer;min-height:56px}
+.d-dow{font-family:var(--disp);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);width:30px;flex:none;padding-top:2px}
+.day.is-today .d-dow{color:var(--violet)}
+.d-mid{flex:1;min-width:0}
+.d-title{font-family:var(--disp);font-size:23px;font-weight:700;line-height:1.05;text-transform:uppercase;letter-spacing:.005em}
+.d-sub{font-size:13px;color:var(--muted);margin-top:1px}
+.d-right{flex:none;display:flex;align-items:center;gap:9px}
+.mins{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.chev{width:9px;height:9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);
+  transform:rotate(45deg);transition:transform .2s;margin-bottom:3px}
+.day.open .chev{transform:rotate(-135deg);margin-bottom:-3px}
+.badge{width:20px;height:20px;border-radius:50%;background:var(--teal);flex:none;position:relative}
+.badge::after{content:"";position:absolute;left:6.5px;top:3.5px;width:5px;height:9px;
+  border-right:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(42deg)}
+
+.d-body{display:none;padding:0 14px 14px;border-top:1px solid var(--line)}
+.day.open .d-body{display:block}
+
+.grp{margin-top:14px}
+.grp-h{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);padding-bottom:6px;border-bottom:1px solid var(--line);margin-bottom:2px}
+
+.row{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.row:last-child{border-bottom:0}
+.box{width:26px;height:26px;flex:none;border:2px solid var(--line);border-radius:7px;background:#fff;
+  position:relative;transition:background .15s,border-color .15s;margin-top:1px}
+.row.on .box{background:var(--teal);border-color:var(--teal)}
+.row.on .box::after{content:"";position:absolute;left:8px;top:4px;width:6px;height:11px;
+  border-right:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:rotate(42deg)}
+.r-mid{flex:1;min-width:0}
+.r-name{font-size:15px;font-weight:500;line-height:1.3}
+.row.on .r-name{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line)}
+.r-hint{font-size:12.5px;color:var(--muted);margin-top:2px;line-height:1.4}
+.r-val{font-family:var(--mono);font-size:16px;font-weight:600;flex:none;padding-top:2px;
+  font-variant-numeric:tabular-nums}
+
+.rule{font-size:12.5px;color:var(--muted);background:var(--violet-soft);border-radius:8px;
+  padding:9px 11px;margin-top:14px;line-height:1.45}
+.rule b{color:var(--violet-deep);font-weight:600}
+
+/* ---------- log ---------- */
+.log{margin-top:16px;padding-top:14px;border-top:1px dashed var(--line)}
+.log-h{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.scale{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
+.sc{aspect-ratio:1;min-height:32px;border:1px solid var(--line);background:#fff;border-radius:6px;
+  font-family:var(--mono);font-size:12px;color:var(--muted);cursor:pointer;padding:0}
+.sc.on{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:600}
+textarea{width:100%;margin-top:9px;padding:10px;border:1px solid var(--line);border-radius:8px;
+  font:inherit;font-size:14px;resize:vertical;min-height:52px;background:#fff;color:var(--ink)}
+textarea:focus,.sc:focus-visible,.box:focus-visible,.d-head:focus-visible,.jump:focus-visible{
+  outline:2px solid var(--violet);outline-offset:2px}
+
+/* ---------- everyday bookends ---------- */
+.bookend{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin:8px 0}
+.bookend .grp-h{border:0;padding:0;margin-bottom:7px}
+.bookend p{margin:0;font-size:14px;line-height:1.55;color:var(--muted)}
+.bookend b{color:var(--ink);font-weight:600}
+
+.close{margin:34px 0 10px;padding:18px;background:var(--ink);color:#fff;border-radius:12px}
+.close h2{font-family:var(--disp);font-size:26px;font-weight:700;text-transform:uppercase;margin:0 0 7px}
+.close p{margin:0;font-size:14.5px;line-height:1.55;color:#C6C9DC}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Bodyweight &middot; Strength + Conditioning</p>
+    <h1>The 8-Week<br>Block</h1>
+    <p class="dates" id="dates"></p>
+    <div class="block" id="block" aria-hidden="true"></div>
+    <div class="tally"><span id="tally"></span><span id="pct"></span></div>
+    <button class="jump" id="jump">Go to today</button>
+  </div>
+</header>
+
+<main class="wrap" id="app"></main>
+
+<div class="wrap">
+  <div class="close">
+    <h2>When the block is done</h2>
+    <p>Scroll back through your ratings. Whatever you kept marking 7 and up is the part worth building on &mdash; run the block again from Week 5's numbers, add a fifth day, point the running at a 5K, or start adding weight.</p>
+  </div>
+</div>
+
+<script>
+const WEEKS = [{"n":1,"start":"2026-08-17","range":"Aug 17 – Aug 23","days":[{"date":"2026-08-17","dow":"Mon","label":"Monday, August 17","kind":"strength","title":"Strength A","sub":"Lower body &amp; push","mins":"45","blocks":[{"h":"3 rounds · rest 60–90 sec between","items":[{"n":"Squats","v":"10"},{"n":"Incline push-ups","v":"8","h":"hands on a counter or step"},{"n":"Reverse lunges","v":"8 ea"},{"n":"Glute bridge","v":"12"},{"n":"Wall sit","v":"0:30"}]},{"h":"Finisher","items":[{"n":"Mountain climbers / high knees","v":"4 rounds","h":"30 sec hard, 30 sec rest — alternate"}]}]},{"date":"2026-08-18","dow":"Tue","label":"Tuesday, August 18","kind":"run","title":"Easy run","sub":"Conversational pace the whole way","mins":"35","blocks":[{"h":"Endurance","items":[{"n":"Run 3 / walk 2","v":"","h":"5 times through · 25 min"}]}]},{"date":"2026-08-19","dow":"Wed","label":"Wednesday, August 19","kind":"rest","title":"Rest","sub":"Or an easy walk if you feel like moving"},{"date":"2026-08-20","dow":"Thu","label":"Thursday, August 20","kind":"strength","title":"Strength B","sub":"Full body &amp; pull","mins":"45","blocks":[{"h":"3 rounds · rest 60–90 sec between","items":[{"n":"Table rows","v":"6","h":"lie under a sturdy table, pull your chest to the edge"},{"n":"Split squat","v":"8 ea"},{"n":"Pike push-ups","v":"5","h":"hips high, head toward the floor"},{"n":"Step-ups onto a chair","v":"10 ea"},{"n":"Superman hold","v":"0:20"}]},{"h":"Core circuit · 2 rounds","items":[{"n":"Plank","v":"0:30"},{"n":"Dead bug","v":"8 ea"},{"n":"Side plank","v":"0:20 ea"},{"n":"Bird dog","v":"8 ea"}]}]},{"date":"2026-08-21","dow":"Fri","label":"Friday, August 21","kind":"intervals","title":"Intervals","sub":"Hill repeats","mins":"35","blocks":[{"h":"Main set","items":[{"n":"6 x 30 sec hard","v":"","h":"90 sec easy walk between each"}]}]},{"date":"2026-08-22","dow":"Sat","label":"Saturday, August 22","kind":"fun","title":"Something fun","sub":"Bike, hike, swim, pickup game, long walk. Optional."},{"date":"2026-08-23","dow":"Sun","label":"Sunday, August 23","kind":"rest","title":"Rest","sub":"Full day off"}]},{"n":2,"start":"2026-08-24","range":"Aug 24 – Aug 30","days":[{"date":"2026-08-24","dow":"Mon","label":"Monday, August 24","kind":"strength","title":"Strength A","sub":"Lower body &amp; push","mins":"45","blocks":[{"h":"3 rounds · rest 60–90 sec between","items":[{"n":"Squats","v":"10"},{"n":"Incline push-ups","v":"8","h":"hands on a counter or step"},{"n":"Reverse lunges","v":"8 ea"},{"n":"Glute bridge","v":"12"},{"n":"Wall sit","v":"0:30"}]},{"h":"Finisher","items":[{"n":"Mountain climbers / high knees","v":"4 rounds","h":"30 sec hard, 30 sec rest — alternate"}]}]},{"date":"2026-08-25","dow":"Tue","label":"Tuesday, August 25","kind":"run","title":"Easy run","sub":"Conversational pace the whole way","mins":"35","blocks":[{"h":"Endurance","items":[{"n":"Run 3 / walk 2","v":"","h":"5 times through · 25 min"}]}]},{"date":"2026-08-26","dow":"Wed","label":"Wednesday, August 26","kind":"rest","title":"Rest","sub":"Or an easy walk if you feel like moving"},{"date":"2026-08-27","dow":"Thu","label":"Thursday, August 27","kind":"strength","title":"Strength B","sub":"Full body &amp; pull","mins":"45","blocks":[{"h":"3 rounds · rest 60–90 sec between","items":[{"n":"Table rows","v":"6","h":"lie under a sturdy table, pull your chest to the edge"},{"n":"Split squat","v":"8 ea"},{"n":"Pike push-ups","v":"5","h":"hips high, head toward the floor"},{"n":"Step-ups onto a chair","v":"10 ea"},{"n":"Superman hold","v":"0:20"}]},{"h":"Core circuit · 2 rounds","items":[{"n":"Plank","v":"0:30"},{"n":"Dead bug","v":"8 ea"},{"n":"Side plank","v":"0:20 ea"},{"n":"Bird dog","v":"8 ea"}]}]},{"date":"2026-08-28","dow":"Fri","label":"Friday, August 28","kind":"intervals","title":"Intervals","sub":"Yard shuttles","mins":"35","blocks":[{"h":"Main set","items":[{"n":"8 x 20 sec sprint","v":"","h":"two points ~20 yards apart · rest 40 sec"}]}]},{"date":"2026-08-29","dow":"Sat","label":"Saturday, August 29","kind":"fun","title":"Something fun","sub":"Bike, hike, swim, pickup game, long walk. Optional."},{"date":"2026-08-30","dow":"Sun","label":"Sunday, August 30","kind":"rest","title":"Rest","sub":"Full day off"}]},{"n":3,"start":"2026-08-31","range":"Aug 31 – Sep 6","days":[{"date":"2026-08-31","dow":"Mon","label":"Monday, August 31","kind":"strength","title":"Strength A","sub":"Lower body &amp; push","mins":"45","blocks":[{"h":"3 rounds · rest 60–90 sec between","items":[{"n":"Squats","v":"12"},{"n":"Incline push-ups","v":"10"},{"n":"Reverse lunges","v":"10 ea"},{"n":"Glute bridge","v":"15"},{"n":"Wall sit","v":"0:40"}]},{"h":"Finisher","items":[{"n":"Mountain climbers / high knees","v":"4 rounds","h":"30 sec hard, 30 sec rest — alternate"}]}]},{"date":"2026-09-01","dow":"Tue","label":"Tuesday, September 1","kind":"run","title":"Easy run","sub":"Conversational pace the whole way","mins":"35","blocks":[{"h":"Endurance","items":[{"n":"Run 5 / walk 2","v":"","h":"4 times through · 28 min"}]}]},{"date":"2026-09-02","dow":"Wed","label":"Wednesday, September 2","kind":"rest","title":"Rest","sub":"Or an easy walk if you feel like moving"},{"date":"2026-09-03","dow":"Thu","label":"Thursday, September 3","kind":"strength","title":"Strength B","sub":"Full body &amp; pull","mins":"45","blocks":[{"h":"3 rounds · rest 60–90 sec between","items":[{"n":"Table rows","v":"8"},{"n":"Split squat","v":"10 ea"},{"n":"Pike push-ups","v":"7"},{"n":"Step-ups","v":"12 ea"},{"n":"Superman hold","v":"0:30"}]},{"h":"Core circuit · 2 rounds","items":[{"n":"Plank","v":"0:40"},{"n":"Dead bug","v":"8 ea"},{"n":"Side plank","v":"0:25 ea"},{"n":"Bird dog","v":"8 ea"}]}]},{"date":"2026-09-04","dow":"Fri","label":"Friday, September 4","kind":"intervals","title":"Intervals","sub":"Indoor circuit","mins":"35","blocks":[{"h":"Main set","items":[{"n":"2 rounds","v":"","h":"40 sec on / 20 sec off: squat jumps → mountain climbers → skaters → high knees → plank shoulder taps → burpees"}]}]},{"date":"2026-09-05","dow":"Sat","label":"Saturday, September 5","kind":"fun","title":"Something fun","sub":"Bike, hike, swim, pickup game, long walk. Optional."},{"date":"2026-09-06","dow":"Sun","label":"Sunday, September 6","kind":"rest","title":"Rest","sub":"Full day off"}]},{"n":4,"start":"2026-09-07","range":"Sep 7 – Sep 13","days":[{"date":"2026-09-07","dow":"Mon","label":"Monday, September 7","kind":"strength","title":"Strength A","sub":"Lower body &amp; push","mins":"45","blocks":[{"h":"3 rounds · rest 60–90 sec between","items":[{"n":"Squats","v":"12"},{"n":"Incline push-ups","v":"10"},{"n":"Reverse lunges","v":"10 ea"},{"n":"Glute bridge","v":"15"},{"n":"Wall sit","v":"0:40"}]},{"h":"Finisher","items":[{"n":"Mountain climbers / high knees","v":"4 rounds","h":"30 sec hard, 30 sec rest — alternate"}]}]},{"date":"2026-09-08","dow":"Tue","label":"Tuesday, September 8","kind":"run","title":"Easy run","sub":"Conversational pace the whole way","mins":"35","blocks":[{"h":"Endurance","items":[{"n":"Run 5 / walk 2","v":"","h":"4 times through · 28 min"}]}]},{"date":"2026-09-09","dow":"Wed","label":"Wednesday, September 9","kind":"rest","title":"Rest","sub":"Or an easy walk if you feel like moving"},{"date":"2026-09-10","dow":"Thu","label":"Thursday, September 10","kind":"strength","title":"Strength B","sub":"Full body &amp; pull","mins":"45","blocks":[{"h":"3 rounds · rest 60–90 sec between","items":[{"n":"Table rows","v":"8"},{"n":"Split squat","v":"10 ea"},{"n":"Pike push-ups","v":"7"},{"n":"Step-ups","v":"12 ea"},{"n":"Superman hold","v":"0:30"}]},{"h":"Core circuit · 2 rounds","items":[{"n":"Plank","v":"0:40"},{"n":"Dead bug","v":"8 ea"},{"n":"Side plank","v":"0:25 ea"},{"n":"Bird dog","v":"8 ea"}]}]},{"date":"2026-09-11","dow":"Fri","label":"Friday, September 11","kind":"intervals","title":"Intervals","sub":"Hill repeats","mins":"35","blocks":[{"h":"Main set","items":[{"n":"8 x 30 sec hard","v":"","h":"90 sec easy walk between each"}]}]},{"date":"2026-09-12","dow":"Sat","label":"Saturday, September 12","kind":"fun","title":"Something fun","sub":"Bike, hike, swim, pickup game, long walk. Optional."},{"date":"2026-09-13","dow":"Sun","label":"Sunday, September 13","kind":"rest","title":"Rest","sub":"Full day off"}]},{"n":5,"start":"2026-09-14","range":"Sep 14 – Sep 20","days":[{"date":"2026-09-14","dow":"Mon","label":"Monday, September 14","kind":"strength","title":"Strength A","sub":"Lower body &amp; push","mins":"45","blocks":[{"h":"3 rounds · rest 60–90 sec between","items":[{"n":"Squats","v":"15"},{"n":"Incline push-ups","v":"12"},{"n":"Reverse lunges","v":"12 ea"},{"n":"Glute bridge","v":"15","h":"2-sec hold at the top"},{"n":"Wall sit","v":"0:50"}]},{"h":"Finisher","items":[{"n":"Mountain climbers / high knees","v":"5 rounds","h":"30 sec hard, 30 sec rest — alternate"}]}]},{"date":"2026-09-15","dow":"Tue","label":"Tuesday, September 15","kind":"run","title":"Easy run","sub":"Conversational pace the whole way","mins":"35","blocks":[{"h":"Endurance","items":[{"n":"Run 8 / walk 2","v":"","h":"3 times through · 30 min"}]}]},{"date":"2026-09-16","dow":"Wed","label":"Wednesday, September 16","kind":"rest","title":"Rest","sub":"Or an easy walk if you feel like moving"},{"date":"2026-09-17","dow":"Thu","label":"Thursday, September 17","kind":"strength","title":"Strength B","sub":"Full body &amp; pull","mins":"45","blocks":[{"h":"3 rounds · rest 60–90 sec between","items":[{"n":"Table rows","v":"10"},{"n":"Split squat","v":"12 ea"},{"n":"Pike push-ups","v":"9"},{"n":"Step-ups","v":"15 ea"},{"n":"Superman hold","v":"0:40"}]},{"h":"Core circuit · 2 rounds","items":[{"n":"Plank","v":"0:50"},{"n":"Dead bug","v":"10 ea"},{"n":"Side plank","v":"0:30 ea"},{"n":"Bird dog","v":"10 ea"}]}]},{"date":"2026-09-18","dow":"Fri","label":"Friday, September 18","kind":"intervals","title":"Intervals","sub":"Yard shuttles","mins":"35","blocks":[{"h":"Main set","items":[{"n":"10 x 20 sec sprint","v":"","h":"rest 40 sec between"}]}]},{"date":"2026-09-19","dow":"Sat","label":"Saturday, September 19","kind":"fun","title":"Something fun","sub":"Bike, hike, swim, pickup game, long walk. Optional."},{"date":"2026-09-20","dow":"Sun","label":"Sunday, September 20","kind":"rest","title":"Rest","sub":"Full day off"}]},{"n":6,"start":"2026-09-21","range":"Sep 21 – Sep 27","days":[{"date":"2026-09-21","dow":"Mon","label":"Monday, September 21","kind":"strength","title":"Strength A","sub":"Lower body &amp; push","mins":"45","blocks":[{"h":"3 rounds · rest 60–90 sec between","items":[{"n":"Squats","v":"15"},{"n":"Incline push-ups","v":"12"},{"n":"Reverse lunges","v":"12 ea"},{"n":"Glute bridge","v":"15","h":"2-sec hold at the top"},{"n":"Wall sit","v":"0:50"}]},{"h":"Finisher","items":[{"n":"Mountain climbers / high knees","v":"5 rounds","h":"30 sec hard, 30 sec rest — alternate"}]}]},{"date":"2026-09-22","dow":"Tue","label":"Tuesday, September 22","kind":"run","title":"Easy run","sub":"Conversational pace the whole way","mins":"35","blocks":[{"h":"Endurance","items":[{"n":"Run 8 / walk 2","v":"","h":"3 times through · 30 min"}]}]},{"date":"2026-09-23","dow":"Wed","label":"Wednesday, September 23","kind":"rest","title":"Rest","sub":"Or an easy walk if you feel like moving"},{"date":"2026-09-24","dow":"Thu","label":"Thursday, September 24","kind":"strength","title":"Strength B","sub":"Full body &amp; pull","mins":"45","blocks":[{"h":"3 rounds · rest 60–90 sec between","items":[{"n":"Table rows","v":"10"},{"n":"Split squat","v":"12 ea"},{"n":"Pike push-ups","v":"9"},{"n":"Step-ups","v":"15 ea"},{"n":"Superman hold","v":"0:40"}]},{"h":"Core circuit · 2 rounds","items":[{"n":"Plank","v":"0:50"},{"n":"Dead bug","v":"10 ea"},{"n":"Side plank","v":"0:30 ea"},{"n":"Bird dog","v":"10 ea"}]}]},{"date":"2026-09-25","dow":"Fri","label":"Friday, September 25","kind":"intervals","title":"Intervals","sub":"Indoor circuit","mins":"35","blocks":[{"h":"Main set","items":[{"n":"3 rounds","v":"","h":"40 sec on / 20 sec off: squat jumps → mountain climbers → skaters → high knees → plank shoulder taps → burpees"}]}]},{"date":"2026-09-26","dow":"Sat","label":"Saturday, September 26","kind":"fun","title":"Something fun","sub":"Bike, hike, swim, pickup game, long walk. Optional."},{"date":"2026-09-27","dow":"Sun","label":"Sunday, September 27","kind":"rest","title":"Rest","sub":"Full day off"}]},{"n":7,"start":"2026-09-28","range":"Sep 28 – Oct 4","days":[{"date":"2026-09-28","dow":"Mon","label":"Monday, September 28","kind":"strength","title":"Strength A","sub":"Lower body &amp; push","mins":"45","blocks":[{"h":"3 rounds · rest 60–90 sec between","items":[{"n":"Squats","v":"15","h":"3 seconds down on every rep"},{"n":"Push-ups on the floor","v":"8"},{"n":"Reverse lunges","v":"12 ea","h":"slow and controlled"},{"n":"Single-leg glute bridge","v":"8 ea"},{"n":"Wall sit","v":"1:00"}]},{"h":"Finisher","items":[{"n":"Mountain climbers / high knees","v":"6 rounds","h":"30 sec hard, 30 sec rest — alternate"}]}]},{"date":"2026-09-29","dow":"Tue","label":"Tuesday, September 29","kind":"run","title":"Easy run","sub":"Conversational pace the whole way","mins":"35","blocks":[{"h":"Endurance","items":[{"n":"Run 20–25 min straight","v":"","h":"then walk 5 to finish"}]}]},{"date":"2026-09-30","dow":"Wed","label":"Wednesday, September 30","kind":"rest","title":"Rest","sub":"Or an easy walk if you feel like moving"},{"date":"2026-10-01","dow":"Thu","label":"Thursday, October 1","kind":"strength","title":"Strength B","sub":"Full body &amp; pull","mins":"45","blocks":[{"h":"3 rounds · rest 60–90 sec between","items":[{"n":"Table rows","v":"12"},{"n":"Split squat","v":"8 ea","h":"back foot up on a chair"},{"n":"Pike push-ups","v":"6","h":"feet up on a step"},{"n":"Step-ups","v":"15 ea","h":"slow on the way down"},{"n":"Superman hold","v":"0:45"}]},{"h":"Core circuit · 2 rounds","items":[{"n":"Plank","v":"1:00"},{"n":"Dead bug","v":"10 ea"},{"n":"Side plank","v":"0:40 ea"},{"n":"Bird dog","v":"10 ea"}]}]},{"date":"2026-10-02","dow":"Fri","label":"Friday, October 2","kind":"intervals","title":"Intervals","sub":"Hill repeats","mins":"35","blocks":[{"h":"Main set","items":[{"n":"8 x 30 sec hard","v":"","h":"90 sec easy walk between each"}]}]},{"date":"2026-10-03","dow":"Sat","label":"Saturday, October 3","kind":"fun","title":"Something fun","sub":"Bike, hike, swim, pickup game, long walk. Optional."},{"date":"2026-10-04","dow":"Sun","label":"Sunday, October 4","kind":"rest","title":"Rest","sub":"Full day off"}]},{"n":8,"start":"2026-10-05","range":"Oct 5 – Oct 11","days":[{"date":"2026-10-05","dow":"Mon","label":"Monday, October 5","kind":"strength","title":"Strength A","sub":"Lower body &amp; push","mins":"45","blocks":[{"h":"3 rounds · rest 60–90 sec between","items":[{"n":"Squats","v":"15","h":"3 seconds down on every rep"},{"n":"Push-ups on the floor","v":"8"},{"n":"Reverse lunges","v":"12 ea","h":"slow and controlled"},{"n":"Single-leg glute bridge","v":"8 ea"},{"n":"Wall sit","v":"1:00"}]},{"h":"Finisher","items":[{"n":"Mountain climbers / high knees","v":"6 rounds","h":"30 sec hard, 30 sec rest — alternate"}]}]},{"date":"2026-10-06","dow":"Tue","label":"Tuesday, October 6","kind":"run","title":"Easy run","sub":"Conversational pace the whole way","mins":"35","blocks":[{"h":"Endurance","items":[{"n":"Run 20–25 min straight","v":"","h":"then walk 5 to finish"}]}]},{"date":"2026-10-07","dow":"Wed","label":"Wednesday, October 7","kind":"rest","title":"Rest","sub":"Or an easy walk if you feel like moving"},{"date":"2026-10-08","dow":"Thu","label":"Thursday, October 8","kind":"strength","title":"Strength B","sub":"Full body &amp; pull","mins":"45","blocks":[{"h":"3 rounds · rest 60–90 sec between","items":[{"n":"Table rows","v":"12"},{"n":"Split squat","v":"8 ea","h":"back foot up on a chair"},{"n":"Pike push-ups","v":"6","h":"feet up on a step"},{"n":"Step-ups","v":"15 ea","h":"slow on the way down"},{"n":"Superman hold","v":"0:45"}]},{"h":"Core circuit · 2 rounds","items":[{"n":"Plank","v":"1:00"},{"n":"Dead bug","v":"10 ea"},{"n":"Side plank","v":"0:40 ea"},{"n":"Bird dog","v":"10 ea"}]}]},{"date":"2026-10-09","dow":"Fri","label":"Friday, October 9","kind":"intervals","title":"Intervals","sub":"Yard shuttles","mins":"35","blocks":[{"h":"Main set","items":[{"n":"10 x 20 sec sprint","v":"","h":"rest 40 sec between"}]}]},{"date":"2026-10-10","dow":"Sat","label":"Saturday, October 10","kind":"fun","title":"Something fun","sub":"Bike, hike, swim, pickup game, long walk. Optional."},{"date":"2026-10-11","dow":"Sun","label":"Sunday, October 11","kind":"rest","title":"Rest","sub":"Full day off"}]}];
+
+const KEY="block8";
+let S={};
+try{const r=localStorage.getItem(KEY);if(r)S=JSON.parse(r)}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const get=d=>S[d]||(S[d]={c:{},f:0,n:""});
+
+const TODAY=new Date().toISOString().slice(0,10);
+const allDays=WEEKS.flatMap(w=>w.days);
+const active=allDays.filter(d=>d.blocks);
+const dayEls={};
+
+function total(d){return d.blocks?d.blocks.reduce((n,b)=>n+b.items.length,0)+2:0}
+function count(d){const c=get(d.date).c;return Object.values(c).filter(Boolean).length}
+function isDone(d){return !!d.blocks && count(d)===total(d)}
+
+const blockEl=document.getElementById("block");
+allDays.forEach(d=>{
+  const p=document.createElement("div");
+  p.className="pip"+(d.blocks?"":" rest")+(d.date===TODAY?" today":"");
+  blockEl.appendChild(p);d._pip=p;
+});
+function refreshTop(){
+  let n=0;
+  allDays.forEach(d=>{const y=isDone(d);if(y)n++;d._pip.classList.toggle("done",y)});
+  document.getElementById("tally").innerHTML="<b>"+n+"</b> of "+active.length+" sessions logged";
+  document.getElementById("pct").textContent=Math.round(n/active.length*100)+"%";
+}
+document.getElementById("dates").textContent=
+  new Date(WEEKS[0].start+"T12:00").toDateString().slice(4)+"  \u2192  "+
+  new Date(allDays[allDays.length-1].date+"T12:00").toDateString().slice(4);
+
+const app=document.getElementById("app");
+WEEKS.forEach(w=>{
+  const sec=document.createElement("section");sec.className="week";
+  sec.innerHTML='<div class="wk-head"><span class="wk-num">Week '+w.n+'</span><span class="wk-range">'+w.range+'</span></div>';
+  w.days.forEach(d=>sec.appendChild(dayCard(d)));
+  if(w.n===1)sec.appendChild(bookends());
+  app.appendChild(sec);
+});
+
+function bookends(){
+  const el=document.createElement("div");el.className="bookend";
+  el.innerHTML='<div class="grp-h">Every session, both ends</div>'
+   +'<p><b>Warm up, 6 min:</b> jog in place 60 sec &middot; leg swings 10 each way &middot; 10 slow squats &middot; '
+   +'arm circles &middot; 8 walking lunges with a twist &middot; 5 inchworms &middot; 20 jumping jacks.<br><br>'
+   +'<b>Cool down, 5 min:</b> hold each 30 sec &mdash; quads &middot; hamstrings &middot; calves on a wall &middot; '
+   +'figure-four glutes &middot; chest in a doorway &middot; child\'s pose.</p>';
+  return el;
+}
+
+function row(d,id,name,val,hint){
+  const st=get(d.date);
+  const r=document.createElement("div");
+  r.className="row"+(st.c[id]?" on":"");
+  r.setAttribute("role","checkbox");r.tabIndex=0;
+  r.setAttribute("aria-checked",st.c[id]?"true":"false");
+  r.innerHTML='<span class="box"></span><span class="r-mid"><span class="r-name">'+name+'</span>'
+    +(hint?'<span class="r-hint">'+hint+'</span>':'')+'</span>'
+    +(val?'<span class="r-val">'+val+'</span>':'');
+  const flip=()=>{
+    const s=get(d.date);s.c[id]=!s.c[id];save();
+    r.classList.toggle("on",!!s.c[id]);
+    r.setAttribute("aria-checked",s.c[id]?"true":"false");
+    dayEls[d.date].classList.toggle("is-done",isDone(d));
+    d._pip.classList.add("pop");setTimeout(()=>d._pip.classList.remove("pop"),260);
+    refreshTop();
+  };
+  r.addEventListener("click",flip);
+  r.addEventListener("keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();flip()}});
+  return r;
+}
+
+function dayCard(d){
+  const el=document.createElement("article");
+  el.className="day"+(d.blocks?"":" is-rest")+(d.date===TODAY?" is-today":"");
+  dayEls[d.date]=el;
+
+  const head=document.createElement("button");
+  head.className="d-head";head.type="button";
+  head.innerHTML='<span class="d-dow">'+d.dow+'</span>'
+    +'<span class="d-mid"><span class="d-title">'+d.title+'</span><span class="d-sub">'+d.sub+'</span></span>'
+    +'<span class="d-right">'+(d.mins?'<span class="mins">'+d.mins+'m</span>':'')
+    +(d.blocks?'<span class="chev"></span>':'')+'</span>';
+  el.appendChild(head);
+  if(!d.blocks)return el;
+
+  head.addEventListener("click",()=>el.classList.toggle("open"));
+  if(d.date===TODAY)el.classList.add("open");
+
+  const body=document.createElement("div");body.className="d-body";
+  const st=get(d.date);
+
+  d.blocks.forEach((b,bi)=>{
+    const g=document.createElement("div");g.className="grp";
+    g.innerHTML='<div class="grp-h">'+b.h+'</div>';
+    b.items.forEach((it,ii)=>g.appendChild(row(d,bi+"-"+ii,it.n,it.v,it.h)));
+    body.appendChild(g);
+  });
+
+  const wu=document.createElement("div");wu.className="grp";
+  wu.innerHTML='<div class="grp-h">Bookends</div>';
+  wu.appendChild(row(d,"wu","Warm-up","6:00","the full sequence is up under Week 1"));
+  wu.appendChild(row(d,"cd","Cool-down","5:00","stretches, 30 sec each"));
+  body.appendChild(wu);
+
+  if(d.kind==="strength"){
+    const r=document.createElement("div");r.className="rule";
+    r.innerHTML="<b>If the last round felt easy</b> \u2014 like you had 3+ more reps in you \u2014 add a rep or two next time and write it down. If your form breaks, that set is over, whatever the number says.";
+    body.appendChild(r);
+  }
+  if(d.kind==="run"){
+    const r=document.createElement("div");r.className="rule";
+    r.innerHTML="<b>Easy means easy.</b> You should be able to talk in full sentences the whole time. Going too hard on this day is the fastest way to stall out.";
+    body.appendChild(r);
+  }
+
+  const log=document.createElement("div");log.className="log";
+  log.innerHTML='<div class="log-h">How it felt</div>';
+  const scale=document.createElement("div");scale.className="scale";
+  for(let i=1;i<=10;i++){
+    const b=document.createElement("button");b.type="button";b.className="sc"+(st.f===i?" on":"");
+    b.textContent=i;
+    b.addEventListener("click",()=>{
+      const s=get(d.date);s.f=(s.f===i?0:i);save();
+      scale.querySelectorAll(".sc").forEach((x,j)=>x.classList.toggle("on",s.f===j+1));
+    });
+    scale.appendChild(b);
+  }
+  log.appendChild(scale);
+  const ta=document.createElement("textarea");
+  ta.placeholder="Notes \u2014 what you actually hit, what felt hard\u2026";ta.value=st.n||"";
+  ta.addEventListener("input",()=>{get(d.date).n=ta.value;save()});
+  log.appendChild(ta);
+  body.appendChild(log);
+
+  el.appendChild(body);
+  el.classList.toggle("is-done",isDone(d));
+  return el;
+}
+
+document.getElementById("jump").addEventListener("click",()=>{
+  let t=dayEls[TODAY];
+  if(!t){const nxt=allDays.find(d=>d.date>=TODAY)||allDays[0];t=dayEls[nxt.date]}
+  t.classList.add("open");
+  t.scrollIntoView({behavior:"smooth",block:"center"});
+});
+
+refreshTop();
+if(dayEls[TODAY])setTimeout(()=>dayEls[TODAY].scrollIntoView({block:"center"}),60);
+</script>
+</body>
+</html>
