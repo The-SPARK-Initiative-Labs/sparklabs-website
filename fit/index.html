@@ -120,6 +120,15 @@ textarea:focus,.sc:focus-visible,.box:focus-visible,.d-head:focus-visible,.jump:
 .bookend .grp-h{border:0;padding:0;margin-bottom:7px}
 .bookend p{margin:0;font-size:14px;line-height:1.55;color:var(--muted)}
 .bookend b{color:var(--ink);font-weight:600}
+.bk-h{font-family:var(--disp);font-size:19px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.02em;color:var(--ink);margin:14px 0 2px}
+.bk-h:first-of-type{margin-top:4px}
+.bk-note{font-size:12.5px;color:var(--muted);margin:0 0 6px}
+.bk{list-style:none;margin:0;padding:0}
+.bk li{font-size:14px;line-height:1.5;color:var(--muted);padding:8px 0;border-bottom:1px solid var(--line)}
+.bk li:last-child{border-bottom:0}
+.bk li b{display:block;color:var(--ink);font-weight:600;font-size:14.5px;margin-bottom:1px}
+.bk .amt{font-family:var(--mono);font-size:12px;color:var(--violet-deep);font-weight:600}
 
 .close{margin:34px 0 10px;padding:18px;background:var(--ink);color:#fff;border-radius:12px}
 .close h2{font-family:var(--disp);font-size:26px;font-weight:700;text-transform:uppercase;margin:0 0 7px}
@@ -196,10 +205,27 @@ WEEKS.forEach(w=>{
 function bookends(){
   const el=document.createElement("div");el.className="bookend";
   el.innerHTML='<div class="grp-h">Every session, both ends</div>'
-   +'<p><b>Warm up, 6 min:</b> jog in place 60 sec &middot; leg swings 10 each way &middot; 10 slow squats &middot; '
-   +'arm circles &middot; 8 walking lunges with a twist &middot; 5 inchworms &middot; 20 jumping jacks.<br><br>'
-   +'<b>Cool down, 5 min:</b> hold each 30 sec &mdash; quads &middot; hamstrings &middot; calves on a wall &middot; '
-   +'figure-four glutes &middot; chest in a doorway &middot; child\'s pose.</p>';
+   +'<div class="bk-h">Warm up</div>'
+   +'<p class="bk-note">About 6 minutes. Go straight through with no rest \u2014 you want to feel warm and slightly out of breath by the end.</p>'
+   +'<ul class="bk">'
+   +'<li><b>Jog in place</b>Light and easy, on the balls of your feet. <span class="amt">60 sec</span></li>'
+   +'<li><b>Leg swings</b>Hold a wall for balance. Swing one leg forward and back like a pendulum, keeping your torso still. Then face the wall and swing the same leg side to side across your body. Switch legs. <span class="amt">10 each direction, each leg</span></li>'
+   +'<li><b>Slow squats</b>Feet shoulder-width, sit back like there\'s a chair behind you, chest up. Take about 3 seconds to go down. <span class="amt">10 reps</span></li>'
+   +'<li><b>Arm circles</b>Arms straight out to the sides, draw big circles forward, then reverse. <span class="amt">10 each way</span></li>'
+   +'<li><b>Walking lunges with a twist</b>Step forward into a lunge until both knees are near 90&deg;. While you\'re down there, twist your upper body toward the front leg. Stand, step through with the other leg. <span class="amt">8 total steps</span></li>'
+   +'<li><b>Inchworms</b>Stand, bend at the hips and put your hands on the floor (bend your knees as much as you need). Walk your hands out until you\'re in a push-up position, then walk your feet up to your hands. Stand up. That\'s one. <span class="amt">5 reps</span></li>'
+   +'<li><b>Jumping jacks</b><span class="amt">20 reps</span></li>'
+   +'</ul>'
+   +'<div class="bk-h">Cool down</div>'
+   +'<p class="bk-note">About 5 minutes. Hold each stretch 30 seconds \u2014 that means each side, where there are two. Stretch to mild tension, never to pain, and keep breathing instead of holding your breath.</p>'
+   +'<ul class="bk">'
+   +'<li><b>Quads</b>Stand and hold a wall for balance. Grab one ankle behind you and pull your heel toward your butt, knee pointing down at the floor. Switch legs.</li>'
+   +'<li><b>Hamstrings</b>Sit on the floor with one leg straight out and the other knee bent, foot tucked in. Reach toward the straight foot until you feel it down the back of that thigh. Switch legs.</li>'
+   +'<li><b>Calves</b>Hands flat on a wall, one foot back about two feet. Keep that back leg straight and press its heel into the floor, then lean toward the wall. Switch legs.</li>'
+   +'<li><b>Glutes (figure four)</b>Lie on your back. Cross your right ankle over your left knee so your legs make a number 4. Reach through the gap, grab behind your left thigh, and pull it toward your chest. Switch sides.</li>'
+   +'<li><b>Chest</b>Stand in a doorway. Put one forearm flat against the frame with your elbow about shoulder height, then step forward gently until you feel it across the front of your shoulder and chest. Switch arms.</li>'
+   +'<li><b>Child\'s pose</b>Kneel down, sit back on your heels, walk your hands forward along the floor and let your forehead rest down. Hold 30\u201360 seconds and breathe.</li>'
+   +'</ul>';
   return el;
 }
 
