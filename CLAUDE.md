@@ -109,7 +109,6 @@ curl -X POST https://sparklabs.sparkinitiative.io/upload \
 
 **Cloudflare Tunnel** (permanent URLs, no more ngrok):
 - S.P.A.R.K. Labs API: `https://sparklabs.sparkinitiative.io`
-- Glass Cracker: `https://glass.sparkinitiative.io`
 - SSH: `ssh.sparkinitiative.io`
 
 ---
@@ -132,7 +131,7 @@ PAT token is embedded in remote URL. If push fails with auth error, token may ha
 ## Design System
 
 **Aesthetic:** Terminal/hacker theme (dark background, green text, monospace)
-**Matches:** WiFi Arsenal / Glass Cracker look
+**Matches:** the SPARK//FILES terminal look
 
 **CSS Variables (in style.css):**
 ```css
