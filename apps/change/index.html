@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0f14">
+<title>Change Maker</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Change Maker">
+<style>
+  /* Layout: one-screen door tool — order & cash in, big change out, bill/coin breakdown below. */
+  :root{
+    --bg:#eef1f5; --surface:#ffffff; --surface-2:#f3f6fa;
+    --fg:#101a28; --muted:#5c6b7e; --border:#d7dee7;
+    --accent:#0b5fb0; --accent-fg:#ffffff;
+    --give-bg:#0e8a52; --give-fg:#ffffff;
+    --even-bg:#39434f; --even-fg:#ffffff;
+    --short-bg:#c62828; --short-fg:#ffffff;
+    --chip-bg:#eaf1fb; --chip-fg:#0b3a6b; --chip-border:#cfe0f6;
+    --focus:#0b5fb0;
+    --font-ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#0b0f14; --surface:#151c25; --surface-2:#1b2430;
+      --fg:#eef3f9; --muted:#95a3b4; --border:#28323f;
+      --accent:#4a9bee; --accent-fg:#06121f;
+      --give-bg:#1ba667; --give-fg:#04140c;
+      --even-bg:#2a333f; --even-fg:#eef3f9;
+      --short-bg:#e5484d; --short-fg:#1a0505;
+      --chip-bg:#16293f; --chip-fg:#bcd8f7; --chip-border:#244a73;
+      --focus:#4a9bee; color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0b0f14; --surface:#151c25; --surface-2:#1b2430;
+    --fg:#eef3f9; --muted:#95a3b4; --border:#28323f;
+    --accent:#4a9bee; --accent-fg:#06121f;
+    --give-bg:#1ba667; --give-fg:#04140c;
+    --even-bg:#2a333f; --even-fg:#eef3f9;
+    --short-bg:#e5484d; --short-fg:#1a0505;
+    --chip-bg:#16293f; --chip-fg:#bcd8f7; --chip-border:#244a73;
+    --focus:#4a9bee; color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--fg);font-family:var(--font-ui);
+       -webkit-text-size-adjust:100%;
+       padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  .wrap{max-width:460px;margin:0 auto;padding-inline:16px;padding-block:20px;
+        display:flex;flex-direction:column;gap:16px}
+  header h1{margin:0;font-size:1.5rem;font-weight:800;letter-spacing:-.02em}
+  header p{margin:2px 0 0;color:var(--muted);font-size:.9rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px}
+  .fields{display:flex;flex-direction:column;gap:14px}
+  .field{display:flex;flex-direction:column;gap:6px}
+  .field label{font-size:.8rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+  .field .opt{font-weight:600;text-transform:none;letter-spacing:0;color:var(--muted)}
+  .inp{position:relative;display:flex;align-items:center}
+  .inp span{position:absolute;left:14px;font-size:1.5rem;font-weight:700;color:var(--muted);pointer-events:none}
+  input[type=text]{
+    width:100%;font-family:var(--font-ui);font-size:1.6rem;font-weight:700;
+    font-variant-numeric:tabular-nums;padding:12px 14px 12px 34px;
+    background:var(--surface-2);color:var(--fg);
+    border:2px solid var(--border);border-radius:12px;outline:none}
+  input[type=text]:focus{border-color:var(--focus)}
+  input::placeholder{color:var(--muted);opacity:.6;font-weight:600}
+  .result{border-radius:16px;padding:18px 16px;text-align:center;transition:background-color .12s ease}
+  .result .lbl{font-size:.8rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+  .result .amt{font-size:clamp(2.8rem,16vw,4rem);font-weight:800;line-height:1.02;
+               font-variant-numeric:tabular-nums;letter-spacing:-.02em;margin-top:2px}
+  .result .sub{font-size:.95rem;font-weight:600;margin-top:4px;opacity:.9}
+  .result.give{background:var(--give-bg);color:var(--give-fg)}
+  .result.even{background:var(--even-bg);color:var(--even-fg)}
+  .result.short{background:var(--short-bg);color:var(--short-fg)}
+  .result.idle{background:var(--surface);color:var(--muted);border:1px dashed var(--border)}
+  .result.idle .amt{font-size:1.4rem;font-weight:700;color:var(--muted)}
+  .tipline{display:flex;justify-content:center;gap:6px;align-items:baseline;font-size:.95rem;color:var(--muted)}
+  .tipline b{color:var(--fg);font-variant-numeric:tabular-nums}
+  .breakdown{display:flex;flex-direction:column;gap:10px}
+  .breakdown h2{margin:0;font-size:.78rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{display:inline-flex;align-items:baseline;gap:6px;background:var(--chip-bg);color:var(--chip-fg);
+        border:1px solid var(--chip-border);border-radius:999px;padding:7px 13px;
+        font-weight:700;font-variant-numeric:tabular-nums}
+  .chip .q{font-size:1.05rem}
+  .chip .d{font-size:.85rem;opacity:.8;font-weight:600}
+  .buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  button{font-family:var(--font-ui);font-size:1rem;font-weight:700;padding:14px 12px;border-radius:12px;
+         cursor:pointer;border:2px solid transparent}
+  .btn-keep{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+  .btn-clear{background:transparent;color:var(--fg);border-color:var(--border)}
+  button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  .mathline{text-align:center;font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Change Maker</h1>
+    <p>Order in, cash in — know exactly what to hand back.</p>
+  </header>
+
+  <div class="card fields">
+    <div class="field">
+      <label for="order">Order total</label>
+      <div class="inp"><span>$</span><input id="order" type="text" inputmode="decimal" placeholder="0.00" autocomplete="off"></div>
+    </div>
+    <div class="field">
+      <label for="cash">Cash they gave you</label>
+      <div class="inp"><span>$</span><input id="cash" type="text" inputmode="decimal" placeholder="0.00" autocomplete="off"></div>
+    </div>
+    <div class="field">
+      <label for="tip">Tip they're keeping back <span class="opt">· optional</span></label>
+      <div class="inp"><span>$</span><input id="tip" type="text" inputmode="decimal" placeholder="0.00" autocomplete="off"></div>
+    </div>
+  </div>
+
+  <div id="result" class="result idle" aria-live="polite">
+    <div class="lbl">Change to give back</div>
+    <div class="amt" id="amt">$0.00</div>
+    <div class="sub" id="sub">Type the order and the cash.</div>
+  </div>
+
+  <div class="tipline" id="tipline" hidden>Tip you keep tonight: <b id="tipkept">$0.00</b></div>
+
+  <div class="breakdown" id="breakdown" hidden>
+    <h2>Hand back</h2>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <div class="mathline" id="mathline" hidden></div>
+
+  <div class="buttons">
+    <button class="btn-keep" id="keepBtn" type="button" disabled>“Keep the change”</button>
+    <button class="btn-clear" id="clearBtn" type="button">New order</button>
+  </div>
+</div>
+
+<script>
+  (function(){
+    var orderEl=document.getElementById('order');
+    var cashEl=document.getElementById('cash');
+    var tipEl=document.getElementById('tip');
+    var result=document.getElementById('result');
+    var amtEl=document.getElementById('amt');
+    var subEl=document.getElementById('sub');
+    var tipline=document.getElementById('tipline');
+    var tipkept=document.getElementById('tipkept');
+    var breakdown=document.getElementById('breakdown');
+    var chips=document.getElementById('chips');
+    var mathline=document.getElementById('mathline');
+    var keepBtn=document.getElementById('keepBtn');
+    var clearBtn=document.getElementById('clearBtn');
+    var DENOMS=[[2000,'$20'],[1000,'$10'],[500,'$5'],[100,'$1'],[25,'25¢'],[10,'10¢'],[5,'5¢'],[1,'1¢']];
+    function cents(el){
+      var raw=(el.value||'').replace(/[^0-9.]/g,'');
+      if(raw===''||raw==='.') return null;
+      var v=parseFloat(raw);
+      if(isNaN(v)) return null;
+      return Math.round(v*100);
+    }
+    function money(c){
+      var neg=c<0; c=Math.abs(c);
+      return (neg?'-$':'$')+(c/100).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+    }
+    function makeChange(c){
+      var out=[];
+      for(var i=0;i<DENOMS.length;i++){
+        var n=Math.floor(c/DENOMS[i][0]);
+        if(n>0){out.push([n,DENOMS[i][1]]);c-=n*DENOMS[i][0];}
+      }
+      return out;
+    }
+    function render(){
+      var o=cents(orderEl), ca=cents(cashEl), t=cents(tipEl);
+      var tip=(t===null)?0:t;
+      keepBtn.disabled=(o===null||ca===null);
+      if(o===null||ca===null){
+        result.className='result idle';
+        amtEl.textContent='$0.00';
+        subEl.textContent='Type the order and the cash.';
+        tipline.hidden=true; breakdown.hidden=true; mathline.hidden=true;
+        return;
+      }
+      var change=ca-o-tip;
+      if(tip>0){ tipkept.textContent=money(tip); tipline.hidden=false; }
+      else { tipline.hidden=true; }
+      var parts='Cash '+money(ca)+' − Order '+money(o);
+      if(tip>0) parts+=' − Tip '+money(tip);
+      parts+=' = '+money(change);
+      mathline.textContent=parts; mathline.hidden=false;
+      if(change>0){
+        result.className='result give';
+        amtEl.textContent=money(change);
+        subEl.textContent='Count this back to them.';
+        var list=makeChange(change);
+        chips.innerHTML='';
+        list.forEach(function(row){
+          var el=document.createElement('span');
+          el.className='chip';
+          el.innerHTML='<span class="q">'+row[0]+'×</span><span class="d">'+row[1]+'</span>';
+          chips.appendChild(el);
+        });
+        breakdown.hidden=false;
+      } else if(change===0){
+        result.className='result even';
+        amtEl.textContent='$0.00';
+        subEl.textContent=tip>0?'All even — they keep the tip, no change.':'Exact — no change due.';
+        breakdown.hidden=true;
+      } else {
+        result.className='result short';
+        amtEl.textContent=money(change);
+        subEl.textContent='Short — ask for '+money(-change)+' more.';
+        breakdown.hidden=true;
+      }
+    }
+    keepBtn.addEventListener('click',function(){
+      var o=cents(orderEl), ca=cents(cashEl);
+      if(o===null||ca===null) return;
+      var t=ca-o;
+      if(t<0){ render(); return; }
+      tipEl.value=(t/100).toFixed(2);
+      render();
+      tipEl.blur();
+    });
+    clearBtn.addEventListener('click',function(){
+      orderEl.value='';cashEl.value='';tipEl.value='';
+      render(); orderEl.focus();
+    });
+    [orderEl,cashEl,tipEl].forEach(function(el){ el.addEventListener('input',render); });
+    render();
+  })();
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
+  }
+</script>
+</body>
+</html>
