@@ -1,4 +1,4 @@
-const CACHE = 'real-income-v1';
+const CACHE = 'real-income-v2';
 const ASSETS = [
   './',
   './index.html',

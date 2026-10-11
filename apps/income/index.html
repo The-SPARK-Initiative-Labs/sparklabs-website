@@ -84,15 +84,13 @@
   .pocket .top .lbl{font-size:.74rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
   .pocket .top .big{font-size:2rem;font-weight:800;font-variant-numeric:tabular-nums;font-family:var(--font-mono);color:var(--pocket)}
 
-  .logrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .field{display:flex;flex-direction:column;gap:6px}
   .field label{font-size:.72rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
-  .field label .opt{font-weight:600;text-transform:none;letter-spacing:0}
   .inp{position:relative;display:flex;align-items:center}
-  .inp span{position:absolute;left:12px;font-size:1.25rem;font-weight:700;color:var(--muted);pointer-events:none}
-  input[type=text]{width:100%;font-family:var(--font-ui);font-size:1.35rem;font-weight:700;
-    font-variant-numeric:tabular-nums;padding:11px 12px 11px 30px;background:var(--surface-2);color:var(--fg);
-    border:2px solid var(--border);border-radius:11px;outline:none}
+  .inp span{position:absolute;left:14px;font-size:1.4rem;font-weight:700;color:var(--muted);pointer-events:none}
+  input[type=text]{width:100%;font-family:var(--font-ui);font-size:1.6rem;font-weight:700;
+    font-variant-numeric:tabular-nums;padding:12px 14px 12px 34px;background:var(--surface-2);color:var(--fg);
+    border:2px solid var(--border);border-radius:12px;outline:none}
   input[type=text]:focus{border-color:var(--focus)}
   input::placeholder{color:var(--muted);opacity:.55;font-weight:600}
 
@@ -106,7 +104,6 @@
          border-radius:11px;padding:9px 12px}
   .entry .t{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums;min-width:62px}
   .entry .tip{font-size:1.05rem;font-weight:800;font-variant-numeric:tabular-nums;font-family:var(--font-mono)}
-  .entry .ord{font-size:.78rem;color:var(--muted)}
   .entry .x{margin-left:auto;background:none;border:none;color:var(--muted);font-size:1.3rem;line-height:1;
             cursor:pointer;padding:2px 6px;border-radius:8px}
   .entry .x:active{background:var(--border)}
@@ -160,15 +157,9 @@
       <div class="big" id="pocket">$0.00</div>
     </div>
 
-    <div class="logrow">
-      <div class="field">
-        <label for="tipIn">Tip</label>
-        <div class="inp"><span>$</span><input id="tipIn" type="text" inputmode="decimal" placeholder="0.00" autocomplete="off"></div>
-      </div>
-      <div class="field">
-        <label for="ordIn">Order <span class="opt">· optional</span></label>
-        <div class="inp"><span>$</span><input id="ordIn" type="text" inputmode="decimal" placeholder="0.00" autocomplete="off"></div>
-      </div>
+    <div class="field">
+      <label for="tipIn">Tip amount</label>
+      <div class="inp"><span>$</span><input id="tipIn" type="text" inputmode="decimal" placeholder="0.00" autocomplete="off"></div>
     </div>
     <button class="add" id="addBtn" type="button" disabled>+ Log this delivery</button>
 
@@ -218,7 +209,7 @@
   var log=[];
   try{ var raw=localStorage.getItem(KEY); if(raw) log=JSON.parse(raw)||[]; }catch(e){ log=[]; }
 
-  var tipIn=$('tipIn'), ordIn=$('ordIn'), addBtn=$('addBtn'),
+  var tipIn=$('tipIn'), addBtn=$('addBtn'),
       entries=$('entries'), pocketEl=$('pocket'),
       depositBtn=$('depositBtn'), clearBtn=$('clearBtn');
 
@@ -241,11 +232,9 @@
         var t=new Date(e.ts);
         var hh=t.getHours(), mm=('0'+t.getMinutes()).slice(-2);
         var ap=hh>=12?'PM':'AM'; var h12=hh%12; if(h12===0)h12=12;
-        var html='<span class="t">'+h12+':'+mm+' '+ap+'</span>'+
-                 '<span class="tip">'+money(e.tip)+'</span>';
-        if(e.order) html+='<span class="ord">on '+money(e.order)+'</span>';
-        html+='<button class="x" data-i="'+j+'" aria-label="Remove">×</button>';
-        row.innerHTML=html;
+        row.innerHTML='<span class="t">'+h12+':'+mm+' '+ap+'</span>'+
+                      '<span class="tip">'+money(e.tip)+'</span>'+
+                      '<button class="x" data-i="'+j+'" aria-label="Remove">×</button>';
         entries.appendChild(row);
       }
     }
@@ -257,10 +246,9 @@
 
   addBtn.addEventListener('click',function(){
     var tip=num(tipIn); if(tip===null) return;
-    var order=num(ordIn);
-    log.push({ts:Date.now(), tip:tip, order:order});
+    log.push({ts:Date.now(), tip:tip});
     save(); render();
-    tipIn.value=''; ordIn.value=''; refreshAddBtn(); tipIn.focus();
+    tipIn.value=''; refreshAddBtn(); tipIn.focus();
   });
 
   entries.addEventListener('click',function(ev){
@@ -280,14 +268,16 @@
     if(confirm('Clear the pocket log without depositing?')){ log=[]; save(); render(); }
   });
 
-  [tipIn,ordIn].forEach(function(el){ el.addEventListener('input',refreshAddBtn); });
+  tipIn.addEventListener('input',refreshAddBtn);
   tipIn.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); if(!addBtn.disabled) addBtn.click(); }});
-  ordIn.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); if(!addBtn.disabled) addBtn.click(); }});
 
-  // hand-off from Change Maker: ?tip=12.50&order=24.00 auto-fills
+  // hand-off / shortcut hook: ?tip=12.50 prefills; &add=1 logs it immediately
   try{
     var q=new URLSearchParams(location.search);
-    if(q.get('tip')){ tipIn.value=q.get('tip'); if(q.get('order')) ordIn.value=q.get('order'); refreshAddBtn(); }
+    if(q.get('tip')){
+      tipIn.value=q.get('tip'); refreshAddBtn();
+      if(q.get('add')==='1' && !addBtn.disabled){ addBtn.click(); }
+    }
   }catch(e){}
 
   render(); refreshAddBtn();
