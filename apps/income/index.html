@@ -54,8 +54,6 @@
   header a.back{font-size:.85rem;font-weight:600;color:var(--muted);text-decoration:none}
   header a.back:active{color:var(--fg)}
 
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px}
-
   /* confirmed hero */
   .hero{background:var(--income);color:var(--income-fg);border-radius:16px;padding:18px 16px;text-align:center}
   .hero .lbl{font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.9}
@@ -115,6 +113,23 @@
   .pbtn.primary{border-color:var(--pocket);background:var(--pocket);color:var(--pocket-fg)}
   .pbtn:disabled{opacity:.4;cursor:not-allowed}
 
+  /* history */
+  details.hist{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+  details.hist>summary{list-style:none;cursor:pointer;padding:15px 16px;display:flex;align-items:center;gap:8px;
+    font-size:.78rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  details.hist>summary::-webkit-details-marker{display:none}
+  details.hist>summary .cnt{color:var(--fg);font-variant-numeric:tabular-nums}
+  details.hist>summary .chev{margin-left:auto;transition:transform .15s ease;font-size:1rem}
+  details.hist[open]>summary .chev{transform:rotate(180deg)}
+  .histbody{padding:0 16px 16px;display:flex;flex-direction:column;gap:8px}
+  .histday{border:1px solid var(--border);border-radius:12px;padding:11px 12px;background:var(--surface-2)}
+  .histday .dh{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  .histday .dh .d{font-weight:800;font-size:.95rem}
+  .histday .dh .tot{font-weight:800;font-variant-numeric:tabular-nums;font-family:var(--font-mono);color:var(--income)}
+  .histday .items{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+  .histday .it{font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums;
+    background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:3px 10px}
+
   footer{color:var(--muted);font-size:.76rem;text-align:center;line-height:1.5}
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -171,9 +186,15 @@
     </div>
   </div>
 
+  <!-- HISTORY -->
+  <details class="hist" id="histWrap">
+    <summary>Past deliveries <span class="cnt" id="histCount"></span><span class="chev">⌄</span></summary>
+    <div class="histbody" id="histBody"></div>
+  </details>
+
   <footer>
     Confirmed numbers update when Cairn pulls your bank each week.<br>
-    Your pocket log lives only on this phone.
+    Your pocket and history live on this phone.
   </footer>
 </div>
 
@@ -190,6 +211,12 @@
   var $=function(id){return document.getElementById(id);};
   function money(n){ return '$'+(Math.round(n*100)/100).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
   function fmtDate(iso){ var p=iso.split('-'); return p[1]+'/'+p[2]; }
+  function time12(d){ var hh=d.getHours(),mm=('0'+d.getMinutes()).slice(-2),ap=hh>=12?'PM':'AM',h=hh%12; if(h===0)h=12; return h+':'+mm+' '+ap; }
+  function dayKey(d){ return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2); }
+  function dayLabel(d){
+    var days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    return days[d.getDay()]+' '+(d.getMonth()+1)+'/'+d.getDate();
+  }
 
   // paint confirmed
   var realTotal = CONFIRMED.wages + CONFIRMED.tips;
@@ -204,68 +231,102 @@
     '<span>~<b>'+money(CONFIRMED.perShift)+'</b>/shift</span>'+
     '<span><b>'+CONFIRMED.splitWages+'%</b> wages / '+(100-CONFIRMED.splitWages)+'% tips</span>';
 
-  // ---- POCKET (localStorage) ----
-  var KEY='realincome.pocket.v1';
-  var log=[];
-  try{ var raw=localStorage.getItem(KEY); if(raw) log=JSON.parse(raw)||[]; }catch(e){ log=[]; }
+  // ---- STORAGE ----
+  var KEY='realincome.pocket.v1';       // current, not-yet-deposited
+  var KEY_H='realincome.history.v1';    // deposited / past deliveries
+  function load(k){ try{ var r=localStorage.getItem(k); return r?(JSON.parse(r)||[]):[]; }catch(e){ return []; } }
+  function store(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+
+  var pocket=load(KEY);
+  var history=load(KEY_H);
 
   var tipIn=$('tipIn'), addBtn=$('addBtn'),
       entries=$('entries'), pocketEl=$('pocket'),
-      depositBtn=$('depositBtn'), clearBtn=$('clearBtn');
+      depositBtn=$('depositBtn'), clearBtn=$('clearBtn'),
+      histBody=$('histBody'), histCount=$('histCount');
 
-  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(log)); }catch(e){} }
   function num(el){ var r=(el.value||'').replace(/[^0-9.]/g,''); if(r===''||r==='.') return null; var v=parseFloat(r); return isNaN(v)?null:v; }
 
-  function render(){
-    var sum=0;
-    for(var i=0;i<log.length;i++) sum+=log[i].tip;
+  function renderPocket(){
+    var sum=0; for(var i=0;i<pocket.length;i++) sum+=pocket[i].tip;
     pocketEl.textContent=money(sum);
-
-    if(log.length===0){
-      entries.innerHTML='<div class="empty">No deliveries logged yet tonight.</div>';
+    if(pocket.length===0){
+      entries.innerHTML='<div class="empty">No deliveries logged yet.</div>';
     } else {
       entries.innerHTML='';
-      // newest first
-      for(var j=log.length-1;j>=0;j--){
-        var e=log[j];
+      for(var j=pocket.length-1;j>=0;j--){
+        var e=pocket[j];
         var row=document.createElement('div'); row.className='entry';
-        var t=new Date(e.ts);
-        var hh=t.getHours(), mm=('0'+t.getMinutes()).slice(-2);
-        var ap=hh>=12?'PM':'AM'; var h12=hh%12; if(h12===0)h12=12;
-        row.innerHTML='<span class="t">'+h12+':'+mm+' '+ap+'</span>'+
+        row.innerHTML='<span class="t">'+time12(new Date(e.ts))+'</span>'+
                       '<span class="tip">'+money(e.tip)+'</span>'+
                       '<button class="x" data-i="'+j+'" aria-label="Remove">×</button>';
         entries.appendChild(row);
       }
     }
-    depositBtn.disabled=(log.length===0);
-    clearBtn.disabled=(log.length===0);
+    depositBtn.disabled=(pocket.length===0);
+    clearBtn.disabled=(pocket.length===0);
+  }
+
+  function renderHistory(){
+    if(history.length===0){
+      histCount.textContent='(none yet)';
+      histBody.innerHTML='<div class="empty">Deposited deliveries show up here.</div>';
+      return;
+    }
+    // group by the day the delivery was logged
+    var groups={}; var order=[];
+    for(var i=0;i<history.length;i++){
+      var h=history[i]; var d=new Date(h.ts); var k=dayKey(d);
+      if(!groups[k]){ groups[k]={label:dayLabel(d), ts:d.getTime(), items:[], total:0}; order.push(k); }
+      groups[k].items.push(h); groups[k].total+=h.tip;
+    }
+    order.sort(function(a,b){ return groups[b].ts-groups[a].ts; });
+    var totalAll=0, n=history.length;
+    for(var z=0;z<history.length;z++) totalAll+=history[z].tip;
+    histCount.textContent='('+n+' · '+money(totalAll)+')';
+    histBody.innerHTML='';
+    for(var g=0;g<order.length;g++){
+      var grp=groups[order[g]];
+      var blk=document.createElement('div'); blk.className='histday';
+      var chips='';
+      // newest tip first within the day
+      var its=grp.items.slice().sort(function(a,b){ return b.ts-a.ts; });
+      for(var m=0;m<its.length;m++){ chips+='<span class="it">'+money(its[m].tip)+'</span>'; }
+      blk.innerHTML='<div class="dh"><span class="d">'+grp.label+'</span><span class="tot">'+money(grp.total)+'</span></div>'+
+                    '<div class="items">'+chips+'</div>';
+      histBody.appendChild(blk);
+    }
   }
 
   function refreshAddBtn(){ addBtn.disabled=(num(tipIn)===null); }
 
   addBtn.addEventListener('click',function(){
     var tip=num(tipIn); if(tip===null) return;
-    log.push({ts:Date.now(), tip:tip});
-    save(); render();
+    pocket.push({ts:Date.now(), tip:tip});
+    store(KEY,pocket); renderPocket();
     tipIn.value=''; refreshAddBtn(); tipIn.focus();
   });
 
   entries.addEventListener('click',function(ev){
     var b=ev.target.closest('.x'); if(!b) return;
     var i=parseInt(b.getAttribute('data-i'),10);
-    if(!isNaN(i)){ log.splice(i,1); save(); render(); }
+    if(!isNaN(i)){ pocket.splice(i,1); store(KEY,pocket); renderPocket(); }
   });
 
   depositBtn.addEventListener('click',function(){
-    if(log.length===0) return;
-    if(confirm('Mark these as deposited? They clear from your pocket and will show up as ATM deposits next time Cairn pulls your bank.')){
-      log=[]; save(); render();
+    if(pocket.length===0) return;
+    if(confirm('Mark these as deposited? They move to Past deliveries and will match your ATM deposits on the next bank pull.')){
+      var now=Date.now();
+      for(var i=0;i<pocket.length;i++){ pocket[i].deposited=now; history.push(pocket[i]); }
+      pocket=[]; store(KEY,pocket); store(KEY_H,history);
+      renderPocket(); renderHistory();
     }
   });
   clearBtn.addEventListener('click',function(){
-    if(log.length===0) return;
-    if(confirm('Clear the pocket log without depositing?')){ log=[]; save(); render(); }
+    if(pocket.length===0) return;
+    if(confirm('Delete these without depositing? (Use this only for mistakes — they will NOT be saved to history.)')){
+      pocket=[]; store(KEY,pocket); renderPocket();
+    }
   });
 
   tipIn.addEventListener('input',refreshAddBtn);
@@ -280,7 +341,7 @@
     }
   }catch(e){}
 
-  render(); refreshAddBtn();
+  renderPocket(); renderHistory(); refreshAddBtn();
 
   if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(function(){}); }
 })();
