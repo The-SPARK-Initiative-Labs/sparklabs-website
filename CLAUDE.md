@@ -95,7 +95,7 @@ C:\sparklabs\
 # Get auth token
 curl -X POST https://sparklabs.sparkinitiative.io/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"username": "0v3rr1d3", "pin": "0346"}'
+  -d '{"username": "<user>", "pin": "<pin>"}'   # real values: .private/credentials.md
 
 # Browse files (returns JSON)
 curl https://sparklabs.sparkinitiative.io/browse \
@@ -156,10 +156,9 @@ PAT token is embedded in remote URL. If push fails with auth error, token may ha
 
 **URL:** https://sparkinitiative.io/admin.html
 
-**Credentials:**
-- 0v3rr1d3 / 0346 (admin)
-- linken / 2018 (user)
-- julia / 1221 (user)
+**Credentials:** kept out of this public repo, in `.private/credentials.md` (gitignored, local to Glass):
+
+@.private/credentials.md
 
 **Features:**
 - Login authentication via backend API
